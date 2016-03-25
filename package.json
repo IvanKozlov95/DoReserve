@@ -1,0 +1,16 @@
+{
+  "name": "doreserve",
+  "version": "1.0.0",
+  "description": "Application for reserving table in cafe & restaurants",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "reserve",
+    "cafe",
+    "restaurant"
+  ],
+  "author": "Ivan Kozlov",
+  "license": "ISC"
+}
