@@ -1,3 +1,4 @@
 # exclude everything except 
 node_modules/*
 coffee/*
+*gulp*
