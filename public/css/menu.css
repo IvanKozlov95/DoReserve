@@ -1,0 +1,44 @@
+
+.hide {
+	display: none;
+}
+
+.radialnav {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+.radialnav-sector {
+	fill: rgba(50,50,50,.3);
+	stroke: rgba(0, 0, 0, .5	);
+	stroke-width: 1;
+	transition: all 4.s;
+}
+
+.radialnav-sector.active {
+	fill: rgba(100,100,100,.9);
+}
+
+.radialnav-icon {
+	pointer-events: none;
+	fill: #eee;
+	transition: all .4s;
+}
+
+.radialnav-icon.active {
+	fill: #000;
+}
+
+.radialnav-hint {
+	fill: #eee;
+	font: bold .6em 'PT Sans', Arial, sans-serif;
+	text-anchor: middle;
+	text-transform: uppercase;
+	opacity: 0;
+	transition: all .4s;
+}
+
+.radialnav-hint.active {
+	opacity: 1;
+}
