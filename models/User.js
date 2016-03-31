@@ -1,5 +1,5 @@
 var mongoose = require('../lib/mongoose'),
-	  Schema   = mongoose.Schema,
+    Schema   = mongoose.Schema,
     crypto   = require('crypto');
 
 var UserSchema = new Schema({
@@ -12,12 +12,13 @@ var UserSchema = new Schema({
     type: String,
     required: true
   },
+  email: {
+    type: String
+  },
   salt: {
     type: String,
     required: true
-  },
-  reservedTables: [],
-  favoriteCompanies: []
+  }
 });
 
 UserSchema.methods.encryptPassword = function(password) {
@@ -26,9 +27,12 @@ UserSchema.methods.encryptPassword = function(password) {
 
 UserSchema.virtual('password')
   .set(function(password) {
-    this._plainPassword = password;
     this.salt = Math.random() + '';
     this.hashedPassword = this.encryptPassword(password);
   });
+
+UserSchema.methods.checkPassword = function(password) {
+  return this.encryptPassword(password) == this.hashedPassword;
+}
 
 mongoose.model('User', UserSchema);

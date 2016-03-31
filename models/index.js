@@ -1,6 +1,7 @@
 var log = require('../util/log')(module);
 
-require('./User.js');
-require('./Company.js');
+require('./User');
+require('./Client')
+require('./Company');
 
 log.info('Finished loading models');
