@@ -1,0 +1,12 @@
+extends layout
+
+block content
+	h2.form-signin-heading Register your account
+	form(action='/user/login' method='post').form-signin
+		fieldset
+			label(for='username').sr-only Name
+			input(type='text' name='username' placeholder='Your Name').form-control
+			label(for='password').sr-only Password
+			input(type='password' name='password' placeholder='Your Password').form-control
+			button(type='Login' class='btn btn-lg btn-primary btn-block') Sign Up
+			span(class='help-block')= message

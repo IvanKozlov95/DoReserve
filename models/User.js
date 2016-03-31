@@ -1,5 +1,6 @@
 var mongoose = require('../lib/mongoose'),
-	Schema   = mongoose.Schema;
+	  Schema   = mongoose.Schema,
+    crypto   = require('crypto');
 
 var UserSchema = new Schema({
   username: {
@@ -7,10 +8,27 @@ var UserSchema = new Schema({
     unique: true,
     required: true
   },
-  password: {
+  hashedPassword: {
     type: String,
     required: true
-  }
+  },
+  salt: {
+    type: String,
+    required: true
+  },
+  reservedTables: [],
+  favoriteCompanies: []
 });
+
+UserSchema.methods.encryptPassword = function(password) {
+    return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+};
+
+UserSchema.virtual('password')
+  .set(function(password) {
+    this._plainPassword = password;
+    this.salt = Math.random() + '';
+    this.hashedPassword = this.encryptPassword(password);
+  });
 
 mongoose.model('User', UserSchema);
