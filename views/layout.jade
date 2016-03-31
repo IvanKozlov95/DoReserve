@@ -7,25 +7,38 @@ head
 	link(href='/bootstrap/bootstrap.css' rel='stylesheet')
 	link(href='/css/main.css' rel='stylesheet')
 body
+	//- navbar
+	nav(class='navbar navbar-default')
+		div.container
+			div.navbar-header
+				button(class='navbar-toggle collapsed' data-toggle='collapse' data-target="#navbar"
+				 aria-expanded="false" aria-controls="navbar")
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				a(href='/').navbar-brand DoReserve
+			div(id='navbar' class='navbar-collapse collapse')
+				ul(class='nav navbar-nav')
+					li.active
+						a(href='/') Home
+					li
+						a(href='#') Companies
+					li
+						a(href='#') About
+				//- login 
+				if !user
+					form(class='navbar-form navbar-right' action='/login' method='post')
+						input(type='text' name='username' placeholder='Your Name').form-control
+						input(type='password' name='password' placeholder='Your Password').form-control
+						button(type='Login' class='btn btn-primary btn-sm') Sign In
+						button(type='button' class='btn btn-primary btn-sm' onclick="window.location.href='/register'") Sign Up
+				else
+					div.navbar-right
+						p.navbar-text
+							= 'Hello, ' + user.username + '! '
+							a(href='/logout') logout
+				//- login end
+	//- navbar end
 	div.container
-		//- navbar
-		nav(class='navbar navbar-default')
-			div.container-fluid
-				div.navbar-header
-					button(class='navbar-toggle collapsed' data-toggle='collapse' data-target="#navbar"
-					 aria-expanded="false" aria-controls="navbar")
-						span.sr-only Toggle navigation
-						span.icon-bar
-						span.icon-bar
-						span.icon-bar
-					a(href='/').navbar-brand DoReserve
-				div(id='navbar' class='navbar-collapse collapse')
-					ul(class='nav navbar-nav')
-						li.active
-							a(href='/') Home
-						li
-							a(href='#') Companies
-						li
-							a(href='#') About
-		//- navbar end
 		block content
