@@ -1,0 +1,10 @@
+extends layout
+
+block content
+	if plans
+		ul
+			- for (var i = 0; i < plans.length; i++) 
+				li 
+					a(href= '/company/plan/' + plans[i].id)= plans[i].id
+	else 
+		a(href='/company/plan') Create new
