@@ -1,5 +1,7 @@
 extends layout
 
+block head
+	link(href='/css/main.css' rel='stylesheet')
 block content
 	p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -16,4 +18,4 @@ block content
 	script(src='/js/snap.svg.js')
 	script(src='/js/schema.js')
 	script.
-		window.loadPlan(!{JSON.stringify(plan)});
+		window.createSchema(!{JSON.stringify(company)}, !{JSON.stringify(plan)});
