@@ -14,7 +14,6 @@ router.post('/', function(req, res, next) {
 	passport.authenticate('local',
     function(err, user, info) {
       if (err) return next(err);
-      log.info
       if (user) {
         req.logIn(user, function(err) {
           return err
