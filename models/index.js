@@ -1,5 +1,6 @@
 var log = require('../util/log')(module);
 
+require('./Reservation');
 require('./Plan');
 require('./User');
 require('./Client');

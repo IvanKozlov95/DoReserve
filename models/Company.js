@@ -7,37 +7,28 @@ var mongoose = require('../lib/mongoose'),
  
 
 var CompanySchema = new Schema({
-  plans: [ Schema.Types.ObjectId ],
   logo: String,
   address: String
 });
 
-CompanySchema.methods.createPlan = function(plan, cb) {
-	this.plans = this.plans && [];
-
-	plan = new Plan({
-		tables: plan.tables
-	});
-	plan.save(cb);
-
-	this.plans.push(plan.id);
-	this.save(function(err) {
-		if (err) cb(err);
-	});
-}
-
 CompanySchema.methods.getPlans = function(cb) { 
-	async.map(this.plans, function(planId, callback) {
-		Plan.findById(planId, function(err, plan) {
-			if (err) callback(err);
+	// async.map(this.plans, function(planId, callback) {
+	// 	Plan.findById(planId, function(err, plan) {
+	// 		if (err) callback(err);
 
-			if (plan) {
-				callback(null, plan);
-			} else {
-				log.warn("Couldn't find plan with id: " + planId);
-			}
-		})
-	}, cb);
+	// 		if (plan) {
+	// 			callback(null, plan);
+	// 		} else {
+	// 			log.warn("Couldn't find plan with id: " + planId);
+	// 		}
+	// 	})
+	// }, cb);
+	
+	Plan.find({ company: this._id }, function(err, plans) {
+		if (err) cb(err);
+
+		cb(null, plans);
+	})
 }
 
 User.discriminator('Company', CompanySchema);
