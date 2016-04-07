@@ -1,0 +1,18 @@
+extends layout
+
+block head
+	script(scr='/js/reservation.js')
+
+block content
+	h2 Table # #{table.number}
+	h4(class='label label-info') 
+		a(href='/company?id='+company.id) Company #{company.username}
+	h4(class='label label-info')
+		a(href='/plan?id='+plan.id) Plan #{plan.name}
+	div.well
+		div.row
+			p Reservations
+			div.coll-md-4
+			div.coll-md-4
+			div.coll-md-4
+	
