@@ -9,3 +9,9 @@ exports.mustCompany = function(req, res, next) {
 		? next()
 		: res.redirect('/');
 }
+
+exports.mustClient = function(req, res, next) {
+	(req.isAuthenticated() && req.user.__t == 'Client')
+		? next()
+		: res.redirect('/');
+}
