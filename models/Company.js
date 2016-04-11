@@ -7,23 +7,12 @@ var mongoose = require('../lib/mongoose'),
  
 
 var CompanySchema = new Schema({
+  name: String,
   logo: String,
   address: String
 });
 
 CompanySchema.methods.getPlans = function(cb) { 
-	// async.map(this.plans, function(planId, callback) {
-	// 	Plan.findById(planId, function(err, plan) {
-	// 		if (err) callback(err);
-
-	// 		if (plan) {
-	// 			callback(null, plan);
-	// 		} else {
-	// 			log.warn("Couldn't find plan with id: " + planId);
-	// 		}
-	// 	})
-	// }, cb);
-	
 	Plan.find({ company: this._id }, function(err, plans) {
 		if (err) cb(err);
 

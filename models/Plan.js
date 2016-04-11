@@ -34,6 +34,12 @@ PlanSchema.methods.update = function(items, cb) {
 	});
 }
 
+PlanSchema.methods.findTable = function(id, cb) {
+	var table = this.tables.id(id);
+
+	cb(null, table);
+}
+
 function updateTable (table, callback) {
 	var res = this.tables.id(table.id);
 
