@@ -1,4 +1,24 @@
+.schema-container {
+	display: inline-block;
+	border: 1px solid #1E90FF;
+	margin: auto;
+	width: 70%;
+	height: 500px;
+}
+
+.schema-info {
+	float: right;
+	width: 25%;	
+}
+
 .schema-table {
 	fill: transparent;
 	stroke: #900000;
+}
+
+.avatar {
+	float: right;
+	width: 150px;
+	height: 200px;
+	border: 1px solid red;
 }
