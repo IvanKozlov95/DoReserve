@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 		if (err) return next(err);
 
 		if (plan) {
-			res.render('plan', {
+			res.render('plan/index', {
 				company: req.user.id,
 				plan: plan
 			});
@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/create', mw.mustCompany, function(req, res, next) {
-	res.render('planCreate', {
+	res.render('plan/create', {
 		company: req.user.id
 	});
 });

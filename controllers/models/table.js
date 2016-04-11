@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
 				table = plan.tables.id(tableId);
 				log.info(JSON.stringify(plan.company));
 				return table
-					? res.render('tableInfo', {
+					? res.render('table/info', {
 						table: table,
 						plan: plan,
 						company: plan.company

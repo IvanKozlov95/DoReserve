@@ -6,16 +6,20 @@ var express   = require('express'),
 	Company   = mongoose.model('Company'),
 	log 	  = require('../../util/log')(module);
 
-// ************
-// Home routes
-// ************
 router.get('/', mw.mustCompany, (req, res, next) => {
 	res.render('company');
 });
 
-// ************
-// Plans routes
-// ************
+router.get('/all', function(req, res, next) {
+	Company.find({}, function(err, companies) {
+		if (err) return next(err);
+
+		res.render('company/list', {
+			companies: companies
+		});
+	});
+});
+
 router.get('/plans', function(req, res, next) {
 	Company.findById(req.user.id, function(err, company) {
 		if (err) return next(err);
@@ -24,11 +28,29 @@ router.get('/plans', function(req, res, next) {
 			if (err) return next(err);
 
 			log.info(plans.toString());
-			res.render('planList', {
+			res.render('plan/list', {
 				plans: plans
 			});
 		})
 	});
+});
+
+router.get('/:id', function(req, res, next) {
+	Company.findById(req.params.id, function(err, company) {
+		if (err) return next(err);
+
+		if (company) 
+			company.getPlans(function(err, plans) {
+				if (err) return next(err);
+
+				res.render('company/index', {
+					company: company,
+					plans: plans
+				});
+			})
+		else 
+			res.status(404).end();
+	})
 });
 
 module.exports = router;
