@@ -1,17 +1,15 @@
 (function() {
-  var Schema, btnExport, btnSave, iconsPath, schema, tableSize;
-
-  iconsPath = 'icons.svg';
+  var Schema, btnSave, schema, tableSize;
 
   tableSize = 20;
 
   Schema = (function() {
     function Schema(owner, data) {
-      this.parent = $('.schema-container')[0];
-      this.paper = Snap(this.parent.children[0]);
+      this.parent = $('.schema-container');
+      this.paper = Snap(this.parent.children()[0]);
       this.paper.attr({
-        width: 800,
-        height: 500
+        width: this.parent.width(),
+        height: this.parent.height()
       });
       this.tables = this.paper.g();
       this.owner = owner;
@@ -20,26 +18,53 @@
     }
 
     Schema.prototype._bindEvents = function() {
-      return this.paper.node.addEventListener('click', this.createTable.bind(this));
+      return this.paper.node.addEventListener('dblclick', this.createTable.bind(this));
     };
 
-    Schema.prototype.createTable = function(e) {
-      return this.addTable(e.offsetX, e.offsetY, tableSize);
+    Schema.prototype._tableInfo = function(tableId) {
+      var asd, form;
+      form = $('form#table-info');
+      return asd = form.serialize();
     };
 
-    Schema.prototype.addTable = function(x, y, r, id) {
-      var table;
-      table = this.paper.circle(x, y, r).addClass('schema-table').attr('id', id).click((function(_this) {
+    Schema.prototype._hint = function(ind, x, y, r) {
+      var hint;
+      hint = this.paper.text(0, 0, ind).addClass('schema-table-hint').attr({
+        textpath: "M " + (x - r) + "," + y + " L" + (x + r) + "," + y
+      });
+      hint.select('*').attr({
+        startOffset: '40%'
+      });
+      return hint;
+    };
+
+    Schema.prototype._sector = function(x, y, r) {
+      return this.paper.circle(x, y, r).addClass('schema-table');
+    };
+
+    Schema.prototype._table = function(sector, hint, id) {
+      return this.paper.g(sector, hint).attr('id', id).data('number', hint.text).drag(this._moveTable, function() {
+        return this.data('origTransform', this.transform().local);
+      }).dblclick((function(_this) {
         return function(e) {
           _this._tableInfo(e.target.id);
           return e.stopPropagation();
         };
       })(this));
-      return this.tables.add(table);
     };
 
-    Schema.prototype._tableInfo = function(tableId) {
-      return window.location = '/table?p=' + this.id + '&t=' + tableId;
+    Schema.prototype._moveTable = function(dx, dy) {
+      return this.attr({
+        transform: "" + (this.data('origTransform')) + (this.data('origTransform') ? 't' : 'T') + dx + "," + dy
+      });
+    };
+
+    Schema.prototype.createTable = function(e) {
+      return this.addTable(e.offsetX, e.offsetY, tableSize, null, this.tables.children().length);
+    };
+
+    Schema.prototype.addTable = function(x, y, r, id, num) {
+      return this.tables.add(this._table(this._sector(x, y, r), this._hint(num, x, y, r), id));
     };
 
     Schema.prototype.toJSON = function() {
@@ -94,8 +119,6 @@
 
   btnSave = $('.btn-save-schema')[0];
 
-  btnExport = $('.btn-export-schema')[0];
-
   btnSave.onclick = function(event) {
     return $.ajax({
       url: '/plan',
@@ -113,10 +136,6 @@
         }
       }
     });
-  };
-
-  btnExport.onclick = function() {
-    return schema.toJSON();
   };
 
 }).call(this);
