@@ -1,0 +1,24 @@
+extends ../layout
+
+block head
+	link(href='/css/main.css' rel='stylesheet')
+block content
+	div(class='schema-info well')
+		p.text-info Add a new table on floor plan by clicking on it.
+		form(id='table-info')
+			input(type='hidden' name='tableId')
+			div.form-group
+				label Radius
+				input(type='text' name='radius')
+			div.form-group
+				label Number
+				input(type='text' name='number')
+			button(class='btn btn-md btn-primary') Save
+	div.schema-container
+		svg
+	div.menu-bar
+		button(class='btn-save-schema btn btn-primary') Save
+	script(src='/js/snap.svg.js')
+	script(src='/js/schema.js')
+	script.
+		window.createSchema(!{JSON.stringify(company)}, !{JSON.stringify(plan)});

@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+	h2 company.Name
+	div(class='avatar')
+	table(id='plans-table').table
+		h4 Plans
+		thead
+			tr
+				th #
+				th Name
+				th Info
+			each plan, ind in plans
+				tr
+					td 
+						a(href='/plan/?id=' + plan.id)= ind
+					td
+						p= plan.name
+					td

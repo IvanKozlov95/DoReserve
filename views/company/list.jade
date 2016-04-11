@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+	h4 Companies
+	table(id='companies-table').table
+		thead
+			tr
+				th Logo
+				th Name
+				th Address
+				th Phone
+			each company, ind in companies
+				tr
+					td 
+						a(href=company.id) Logo
+					td
+						p= company.name
+					td
+						p= company.address
+					td
+						p= company.phone

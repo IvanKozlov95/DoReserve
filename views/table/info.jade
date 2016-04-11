@@ -1,0 +1,27 @@
+
+block head
+	script(scr='/js/reservation.js')
+
+block content
+	h2 Table # #{table.number}
+	h4(class='label label-info') 
+		a(href='/company?id='+company.id) Company #{company.username}
+	h4(class='label label-info')
+		a(href='/plan?id='+plan.id) Plan #{plan.name}
+	div.well
+		div.row
+			p Reservations
+			div.coll-md-4
+			div.coll-md-4
+			div.coll-md-4
+	div.well
+		form(action='/reservation/create' method='POST')
+			fieldset
+				input(type='hidden' name='plan' value=plan.id).form-control
+				input(type='hidden' name='table' value=table.id).form-control
+				input(type='date' name='date').form-control
+				input(type='text' name='start-time' placeholder='From...').form-control
+				input(type='text' name='end-time' placeholder='To...').form-control
+				input(type='text' name='persons' placeholder='Persons').form-control
+				button(type='submit' class='btn btn-sm btn-primary') Reserve!
+	

@@ -1,0 +1,17 @@
+extends ../layout
+
+block head
+	link(href='/css/main.css' rel='stylesheet')
+block content
+	p.lead You are avout to create new floor plan.
+	p.text-info Add a new table on floor plan by clicking on it.
+	div(class='schema-container')
+		svg
+	div(class='menu-bar')
+		button(class='btn-save-schema btn btn-primary') Save
+		button(class='btn-export-schema btn btn-primary') Export
+	script(src='/js/jquery-2.2.2.min.js')
+	script(src='/js/snap.svg.js')
+	script(src='/js/schema.js')
+	script.
+		window.createSchema(!{JSON.stringify(locals.company)});
