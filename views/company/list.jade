@@ -1,5 +1,9 @@
 extends ../layout
 
+block head
+	script(src='/js/reservation.js')
+	script(src='https://www.google.com/recaptcha/api.js')
+
 block content
 	h4 Companies
 	table(id='companies-table').table
@@ -19,3 +23,42 @@ block content
 						p= company.address
 					td
 						p= company.phone
+						button.btn.btn-primary(data-toggle='modal' data-target='#exampleModal' data-companyid=company.id) Reserve table
+
+	#exampleModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') &times;
+					h4#exampleModalLabel.modal-title Reserve
+				.modal-body
+					form(id='form-reserve')
+						div.row.form-group
+							div.col-xs-4
+								label.control-label(for='date') Date
+								input#date(type='date' name='date').form-control
+							div.col-xs-3
+								label.control-label(for='time') Time
+								input#time(type='time' name='time').form-control
+							div.col-xs-3
+								label.control-label(for='persons') Persons
+								input#persons(type='number' name='persons').form-control
+						div.row.form-group
+							div.col-xs-4
+								label.control-label(for='phone') Phone
+								input#phone(type='tel' name='phone' pattern='+79[0-9]{9}').form-control
+							div.col-xs-4
+								label.control-label(for='email') Email
+								input#phone(type='email' name='email').form-control
+						div.form-group
+							label.control-label(for='message-text') Message:
+							textarea#message-text.form-control
+						div.form-group
+							input(type='hidden' name='companyid')
+						div.g-recaptcha(data-sitekey='6LfxJx0TAAAAAMbSqaY6GGMQfqgR0a6PZFwWTva6')
+						h4
+							span#message.label-danger
+				.modal-footer
+					button.btn.btn-default(type='button', data-dismiss='modal') Close
+					button#btn-reserve.btn.btn-primary(type='button') Send message
