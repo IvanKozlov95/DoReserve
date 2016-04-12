@@ -8,8 +8,10 @@ var mongoose = require('../lib/mongoose'),
 
 var CompanySchema = new Schema({
   name: String,
+  phone: String,
   logo: String,
-  address: String
+  address: String,
+  desc: String
 });
 
 CompanySchema.methods.getPlans = function(cb) { 
