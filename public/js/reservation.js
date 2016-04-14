@@ -1,9 +1,9 @@
 (function() {
-  var fillModalFields, getCompanyInfo, modalId;
+  var fillModalFields, getCompanyInfo, makeReservation, modalId;
 
   modalId = '#exampleModal';
 
-  $(document).ready(function() {
+  $(window).on('load', function() {
     $(modalId).on('show.bs.modal', function(event) {
       var button;
       button = $(event.relatedTarget);
@@ -14,20 +14,32 @@
         return fillModalFields(company);
       });
     });
-    return $('#btn-reserve').on('click', function() {
-      var form;
-      $(modalId + ' #message').text('');
-      form = $('#form-reserve');
-      return $.ajax({
-        url: '/reservation/create',
-        method: 'POST',
-        data: form.serialize(),
-        complete: function(jqXHR, status) {
-          if (status !== 'success') {
-            return $(modalId + ' #message').text(jqXHR.responseText);
+    $(modalId).on('shown.bs.modal', function() {
+      $('#form-reserve').validator({
+        custom: {
+          odd: function($el) {
+            console.log('asd');
+            return false;
           }
+        },
+        errors: {
+          odd: 'asdasd'
         }
       });
+      return $('#form-reserve').validator().on('submit', function(e) {
+        e.preventDefault();
+        if (grecaptcha.getResponse() === '') {
+          $(modalId + ' #message').text('Please enter the captcha');
+          return;
+        }
+        if (!e.isDefaultPrevented()) {
+          return makeReservation();
+        }
+      });
+    });
+    return $(modalId).on('hidden.bs.modal', function() {
+      $('#form-reserve').validator().off('submit');
+      return $('#form-reserve').validator('destroy');
     });
   });
 
@@ -52,5 +64,7 @@
     $(modalId + ' .modal-title').text(company.name);
     return $(modalId + " input[name='companyid']").val(company._id);
   };
+
+  makeReservation = function() {};
 
 }).call(this);
