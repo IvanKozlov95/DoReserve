@@ -35,6 +35,19 @@ router.get('/plans', function(req, res, next) {
 	});
 });
 
+router.get('/info', function(req, res, next) {
+	Company.findById(req.query.id, function(err, company) {
+		if (err) return next(err);
+
+		if (company) 
+			res.status(200).json({ 
+				company: company
+			});
+		else 
+			res.status(404).end();
+	})
+});
+
 router.get('/:id', function(req, res, next) {
 	Company.findById(req.params.id, function(err, company) {
 		if (err) return next(err);
