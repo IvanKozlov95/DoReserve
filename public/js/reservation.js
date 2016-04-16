@@ -15,31 +15,25 @@
       });
     });
     $(modalId).on('shown.bs.modal', function() {
-      $('#form-reserve').validator({
-        custom: {
-          odd: function($el) {
-            console.log('asd');
-            return false;
-          }
-        },
-        errors: {
-          odd: 'asdasd'
-        }
-      });
+      $('#form-reserve').validator();
       return $('#form-reserve').validator().on('submit', function(e) {
-        e.preventDefault();
-        if (grecaptcha.getResponse() === '') {
-          $(modalId + ' #message').text('Please enter the captcha');
-          return;
-        }
+        $('#form-reserve').validator('validate');
         if (!e.isDefaultPrevented()) {
+          e.preventDefault();
+          if (grecaptcha.getResponse() === '') {
+            $(modalId + ' #message').text('Please enter the captcha');
+            return;
+          }
           return makeReservation();
         }
       });
     });
-    return $(modalId).on('hidden.bs.modal', function() {
+    $(modalId).on('hidden.bs.modal', function() {
       $('#form-reserve').validator().off('submit');
       return $('#form-reserve').validator('destroy');
+    });
+    return $('#btn-reserve').click(function() {
+      return $('#form-reserve').submit();
     });
   });
 
@@ -62,9 +56,25 @@
 
   fillModalFields = function(company) {
     $(modalId + ' .modal-title').text(company.name);
-    return $(modalId + " input[name='companyid']").val(company._id);
+    return $(modalId + " input[name='company']").val(company._id);
   };
 
-  makeReservation = function() {};
+  makeReservation = function() {
+    var form;
+    form = $(modalId + ' #form-reserve');
+    return $.ajax({
+      url: '/reservation/create',
+      method: 'POST',
+      data: form.serialize(),
+      status: {
+        200: function() {
+          return alert('ok');
+        },
+        403: function() {
+          return grecaptcha.reset();
+        }
+      }
+    });
+  };
 
 }).call(this);

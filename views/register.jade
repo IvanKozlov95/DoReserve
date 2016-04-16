@@ -1,15 +1,66 @@
 extends layout
 
+block head
+	link(href='/css/registration.css' rel='stylesheet')
+	link(href='/css/signin.css' rel='stylesheet')
+	script(src='/js/validator.js')
+	script(src='/js/registration.js')
+
 block content
-	h2.form-signin-heading Register your account
-	form(action='/register' method='post').form-signin
-		fieldset
-			label(for='username').sr-only Name
-			input(type='text' name='username' placeholder='Your Name').form-control
-			label(for='password').sr-only Password
-			input(type='password' name='password' placeholder='Your Password').form-control
-			label
-				input(type='checkbox' name='company')
-				= ' Is it company?'
-			button(type='Login' class='btn btn-lg btn-primary btn-block') Sign Up
-			span(class='help-block')= message
+	#selector
+		#client(data-formid='client-form')
+		#company(data-formid='company-form')
+	#content
+		//- data-toggle='validator'
+		form#client-form(role='form').form-signin
+			h2.form-signin-heading Register your account
+			.form-group.has-feedback
+				label(for='username').sr-only Username
+				input(type='text' name='username' placeholder='login' required='' data-error='Please, fill this field').form-control
+				.help-block.with-errors
+			.form-group
+				label(for='password').sr-only Password
+				input(type='password' name='password' placeholder='password' required='' data-error='Please, fill this field').form-control
+				.help-block.with-errors
+			.form-group
+				label(for='friendlyName').sr-only Name
+				input(type='text' name='friendlyName' placeholder='name' data-error='How should I call you?').form-control
+				.help-block.with-errors
+			.form-group
+				label(for='phone').sr-only Phone
+				input(type='tel' name='phone' placeholder='7 915 812 56 69' pattern='^[1-9] [(][0-9]{3}[)] [0-9]{3}-[0-9]{2}-[0-9]{2}$').form-control
+			.form-group
+				label(for='email').sr-only Email
+				input(type='email' name='email' placeholder='asd@asd.asd').form-control
+			input(name='_t' hidden='' value='client')
+			.form-group
+				button.btn-submit.btn.btn-primary.btn-block(type='button') Sign Up
+
+		form#company-form(role='form').form-signin
+			h2.form-signin-heading Register your account
+			.form-group.has-feedback
+				label(for='username').sr-only Username
+				input(type='text' name='username' placeholder='login' required='' data-error='Please, fill this field').form-control
+				.help-block.with-errors
+			.form-group
+				label(for='password').sr-only Password
+				input(type='password' name='password' placeholder='password' required='' data-error='Please, fill this field').form-control
+				.help-block.with-errors
+			.form-group
+				label(for='name').sr-only Name
+				input(type='text' name='name' placeholder='name' data-error='How should I call you?' required='').form-control
+				.help-block.with-errors
+			.form-group
+				label(for='address').sr-only Address
+				input(type='text' name='address' placeholder='address' data-error='Please, fill this field').form-control
+				.help-block.with-errors.form-group
+			.form-group
+				label(for='desc').sr-only Desc
+				textarea(name='desc' placeholder='Describe you company').form-control
+			.form-group
+				label(for='logo').sr-only Logo
+				input(type='file' name='logo' accept='image/*').form-control
+				.help-block.with-errors.form-group
+			input(name='_t' hidden='' value='company')
+			.form-group
+				button.btn-submit.btn.btn-primary.btn-block(type='button') Sign Up
