@@ -4,7 +4,6 @@ block head
 	script(src='/js/validator.js')
 	script(src='/js/reservation.js')
 	script(src='https://www.google.com/recaptcha/api.js')
-	//- script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js')
 
 
 block content
@@ -36,41 +35,40 @@ block content
 						span(aria-hidden='true') &times;
 					h4#exampleModalLabel.modal-title Reserve
 				.modal-body
-					//- data-toggle='validator',
-					form#form-reserve(role='form', action='/reservation/create', method='post', target='_self')
+					form#form-reserve(role='form')
 						.row
-							.form-group
-								.col-xs-4
+							.col-xs-4
+								.form-group
 									label.control-label(for='date') Date
-									input#date(type='date' name='date').form-control
-								.col-xs-4
+									input#date(type='date' name='date' required='').form-control
+							.col-xs-4
+								.form-group
 									label.control-label(for='time') Time
-									input#time(type='time' name='time').form-control
-								.col-xs-4
+									input#time(type='time' name='time' required='').form-control
+							.col-xs-4
+								.form-group
 									label.control-label(for='persons') Persons
 									input#persons(type='number' name='persons').form-control
 						.row
-							.form-group
-								.col-xs-4
+							.col-xs-4
+								.form-group
+									label.control-label(for='email') Email
+									input#phone(type='email' name='email' required='').form-control
+							.col-xs-6.col-xs-offset-2
+								.form-group
 									label.control-label(for='phone') Phone
 									input#phone(type='tel' name='phone' pattern='+79[0-9]{9}').form-control
-								.col-xs-6.col-xs-offset-2
-									label.control-label(for='email') Email
-									input#phone(type='email' name='email').form-control
 						.row
-							.form-group
-								.col-xs-12
+							.col-xs-12
+								.form-group
 									label.control-label(for='message-text') Message:
-									textarea#message-text.form-control
+									textarea#message-text(name='message').form-control
 						.form-group
-							input(type='hidden' name='companyid')
-						.form-group.has-error.has-danger
+							input(type='hidden' name='company')
+						.form-group
 							div#captcha.g-recaptcha(data-sitekey='6LfxJx0TAAAAAMbSqaY6GGMQfqgR0a6PZFwWTva6')
-						.form-group
-							h4
-								span#message.label-danger
-						.form-group
-							button.btn.btn-primary(type='submit') Submit
+						h4
+							span#message.label-danger
 				.modal-footer
 					button.btn.btn-default(type='button', data-dismiss='modal') Close
 					button#btn-reserve.btn.btn-primary(type='button') Send message

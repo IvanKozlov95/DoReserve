@@ -7,6 +7,7 @@ var express     = require('express'),
 	Reservation = mongoose.model('Reservation'),
 	Plan 	    = mongoose.model('Plan'),
 	Company 	= mongoose.model('Company'),
+	Client 		= mongoose.model('Client'),
 	log 	    = require('../../util/log')(module);
 
 router.get('/:id', function(req, res, next) {
@@ -19,7 +20,8 @@ router.get('/:id', function(req, res, next) {
 		if (err) return next(err);
 
 		if (reserve) {
-			if (reserve.client == req.user.id) {
+			if (reserve.client == req.user.id
+				|| reserve.company == req.user.id) {
 				res.render('reservation', {
 					reservation: reserve
 				});
@@ -32,18 +34,37 @@ router.get('/:id', function(req, res, next) {
 	})
 });
 
-router.post('/create', reCaptcha, checkFields([
-		'phone|email',
-		'date',
-		'time'
-	]), function(req, res, next) {
-	Company.findById(req.body.companyid, function(err, company) {
+router.post('/create', reCaptcha, function(req, res, next) {
+	var client = req.user.__t == 'Client' 
+		? req.user.id
+		: null;
+
+	Reservation.create({
+		date: req.body.date,
+		time: req.body.time,
+		persons: req.body.persons,
+		client: client,
+		company: req.body.company,
+		message: req.body.message
+	}, (err, reservation) => {
 		if (err) return next(err);
 
-		if (company) {
+		if (client) {
+			Client.findById(client, (err, client) => {
+				if (err) return next(err);
 
+				if (client) {
+					client.addReservation(reservation.id, (err) => {
+						if (err) return next(err)
+					});
+				}
+
+				log.info('Reservation\'ve been created');
+			})
 		}
-	})
+
+		res.status(200).send('OK');
+	});
 });
 
 router.post('/asdasd',  reCaptcha, function(req, res, next) {
