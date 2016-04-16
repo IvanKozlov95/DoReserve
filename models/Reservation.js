@@ -2,40 +2,30 @@ var mongoose = require('../lib/mongoose'),
     Schema   = mongoose.Schema;
 
 var ReservationSchema = new Schema({
-	client: {
-		type: Schema.Types.ObjectId,
-		ref: 'Client'
-	},
-	plan: {
-		type: Schema.Types.ObjectId,
-		required: true
-	},
-	table: {
-		type: Schema.Types.ObjectId,
-		required: true
-	},
-	date: {
-		type: Date,
-		required: true
-	},
-	time: {
-		from: Number,
-		to: Number
-	},
+	// client: {
+	// 	type: Schema.Types.ObjectId,
+	// 	ref: 'Client'
+	// },
+	company: { type: Schema.Types.ObjectId, required: true },
+	date: { type: Date, required: true },
+	message: String,
+	time: { type: String, required: true },
 	persons: Number,
-	order: Schema.Types.ObjectId
+	order: Schema.Types.ObjectId,
+	created: { type: Date, default: Date.now },
+	isResponsed: { type: Boolean, default: false }
 });
 
-ReservationSchema.static.create = function(options, cb) {
-	var res = new ReservationSchema({
-						plan: options.planId,
-						table: options.tableId,
+ReservationSchema.statics.create = function(options, cb) {
+	var res = new this({
+						// plan: options.planId,
+						// table: options.tableId,
+						client: options.client,
+						company: options.company,
 						date: options.date,
-						time: {
-							from: options['start-time'],
-							to: options['end-time']
-						},
-						persons: options.persons
+						time: options.time,
+						persons: options.persons,
+						message: options.message
 					});
 
 	res.save(cb);

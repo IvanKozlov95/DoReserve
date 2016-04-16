@@ -12,9 +12,8 @@ var UserSchema = new Schema({
     type: String,
     required: true
   },
-  email: {
-    type: String
-  },
+  email: String,
+  phone: String,
   salt: {
     type: String,
     required: true
