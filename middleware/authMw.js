@@ -15,3 +15,9 @@ exports.mustClient = function(req, res, next) {
 		? next()
 		: res.redirect('/');
 }
+
+exports.mustAnon = function(req, res, next) {
+	req.isAuthenticated()
+		? res.redirect('/')
+		: next();
+}
