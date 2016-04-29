@@ -6,7 +6,6 @@
   $(document).ready(function() {
     $('#client').mouseenter(showFrom);
     $('#company').mouseenter(showFrom);
-    $('#client-form').hide();
     $('#company-form').hide();
     $('#client').trigger('mouseenter');
     $('[name="phone"]').change(function(ev) {
@@ -43,11 +42,15 @@
     displayedForm = $(id).show(500);
     displayedForm.validator();
     return displayedForm.validator().on('submit', function(ev) {
+      var formData;
+      formData = new FormData(this);
       if (!ev.isDefaultPrevented()) {
-        return $.ajax({
+        $.ajax({
           url: '/register',
           method: 'POST',
-          data: this.serialize(),
+          data: formData,
+          contentType: false,
+          processData: false,
           statusCode: {
             400: function() {
               return $.notify("Current login is already taken", "warn");
@@ -57,6 +60,7 @@
             }
           }
         });
+        return ev.preventDefault();
       }
     });
   };

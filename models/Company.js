@@ -7,7 +7,6 @@ var mongoose = require('../lib/mongoose'),
  
 
 var CompanySchema = new Schema({
-  name: String,
   logo: String,
   address: String,
   desc: String

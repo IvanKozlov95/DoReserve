@@ -3,21 +3,12 @@ var mongoose = require('../lib/mongoose'),
     crypto   = require('crypto');
 
 var UserSchema = new Schema({
-  username: {
-    type: String,
-    unique: true,
-    required: true
-  },
-  hashedPassword: {
-    type: String,
-    required: true
-  },
+  username: { type: String, unique: true, required: true },
+  hashedPassword: { type: String, required: true },
+  name: String,
   email: String,
   phone: String,
-  salt: {
-    type: String,
-    required: true
-  }
+  salt: { type: String, required: true }
 });
 
 UserSchema.methods.encryptPassword = function(password) {

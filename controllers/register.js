@@ -4,23 +4,29 @@ var router   = require('express').Router(),
  	Client	 = mongoose.model('Client'),
  	Company  = mongoose.model('Company'),
  	log 	 = require('../util/log')(module),
- 	mw 		 = require('../middleware/authMw');
+ 	mw 		 = require('../middleware/authMw'),
+	storages = require('../util/storages'),
+ 	multer	 = require('multer'),
+ 	upload	 = multer({ storage: storages.logoStorage });
 
 router.get('/', mw.mustAnon, function(req, res, next) {
 	res.render('register');
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', upload.single('logo'), function(req, res, next) {
 	var user = req.body._t == 'company'
 		? new Company( { 
 			username: req.body.username,
 			password: req.body.password,
-			address: req.body.address
+			name: req.body.name,
+			address: req.body.address,
+			desc: req.body.desc,
+			logo: req.file.filename,
 		} )
 		: new Client( {
 			username: req.body.username,
 			password: req.body.password,
-			friendlyName: req.body.friendlyName,
+			name: req.body.name,
 			phone: req.body.phone,
 			email: req.body.email
 		} );

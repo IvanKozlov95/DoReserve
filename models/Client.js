@@ -5,7 +5,6 @@ var mongoose 	= require('../lib/mongoose'),
     async 	 	= require('async');
 
 var ClientSchema = new Schema({
-  friendlyName: String,
   reservations: [ Schema.Types.ObjectId ],
   favoriteCompanies: [],
   friends: []
