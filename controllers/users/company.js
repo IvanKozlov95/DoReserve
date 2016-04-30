@@ -1,13 +1,34 @@
-var express   = require('express'),
-	router 	  = express.Router(),
-	mw 	 	  = require('../../middleware/authMw'),
-	mongoose  = require('../../lib/mongoose'),
-	Plan 	  = mongoose.model('Plan'),
-	Company   = mongoose.model('Company'),
-	log 	  = require('../../util/log')(module);
+var express   	  = require('express'),
+	router 	      = express.Router(),
+	auth 	  	  = require('../../middleware/authMw'),
+	mongoose  	  = require('../../lib/mongoose'),
+	Client 	  	  = mongoose.model('Client'),
+	Company  	  = mongoose.model('Company'),
+	Reservation   = mongoose.model('Reservation'),
+	log 	      = require('../../util/log')(module);
 
-router.get('/', mw.mustCompany, (req, res, next) => {
+router.get('/', auth.mustCompany, (req, res, next) => {
 	res.render('company');
+});
+
+router.get('/home', auth.mustCompany, function(req, res, next) {
+	Company
+		.findById(req.user.id, (err, company) => {
+			if (err) return next(err);
+
+			if (company) {
+				company.getReservations(null, (err, reservations) => {
+					if (err) return next(err);
+					res.render('company/home', {
+						company: company,
+						reservations: reservations
+					});
+				})
+			} else {
+				log.warn('Couldn\'t a company but it should be here. Id: ' + res.user.id);
+				res.status(404).end();
+			}
+		});
 });
 
 router.get('/all', function(req, res, next) {
@@ -52,15 +73,17 @@ router.get('/:id', function(req, res, next) {
 	Company.findById(req.params.id, function(err, company) {
 		if (err) return next(err);
 
-		if (company) 
-			company.getPlans(function(err, plans) {
-				if (err) return next(err);
-
-				res.render('company/index', {
-					company: company,
-					plans: plans
-				});
-			})
+		if (company) {
+				log.info(company);
+				company.getPlans(function(err, plans) {
+					if (err) return next(err);
+	
+					res.render('company/profile', {
+						company: company,
+						plans: plans
+					});
+				})
+			}
 		else 
 			res.status(404).end();
 	})
