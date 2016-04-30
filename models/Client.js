@@ -1,7 +1,6 @@
 var mongoose 	= require('../lib/mongoose'),
     Schema   	= mongoose.Schema,
     User     	= mongoose.model('User'),
-	Reservation = mongoose.model('Reservation'),
     async 	 	= require('async');
 
 var ClientSchema = new Schema({
