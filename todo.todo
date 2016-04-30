@@ -1,0 +1,26 @@
+DoReserve:
+  ☐ add filter to getReservation method at ./models/company.js:33
+  ☐ take a look at the captcha mw 
+
+ Add errors:
+   ./controllers/users/company.js"status(404)"
+
+
+     Company
+    .findById(req.user.id)
+    .lean()
+    .populate('newReservations')
+    .exec(function(err, company) {
+      if (err) next(err);
+
+      Reservation.populate(company, {
+        path: 'newReservations.client',
+        select: 'name',
+        model: Client
+      }, (err, result) => {
+        log.info(result.newReservations[0].client.name)
+        res.render('company/home', {
+          company: company
+        });
+      });
+    });
