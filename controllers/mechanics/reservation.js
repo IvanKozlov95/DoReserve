@@ -2,6 +2,7 @@ var express     = require('express'),
 	router 	    = express.Router(),
 	reCaptcha   = require('../../middleware/reCaptcha'),
 	checkFields = require('../../middleware/checkFields'),
+	auth		= require('../../middleware/authMw'),
 	mongoose    = require('../../lib/mongoose'),
 	ObjectId    = mongoose.Types.ObjectId;
 	Reservation = mongoose.model('Reservation'),
@@ -34,7 +35,7 @@ router.get('/:id', function(req, res, next) {
 	})
 });
 
-router.post('/create', reCaptcha, function(req, res, next) {
+router.post('/create', auth.mustClient, reCaptcha, function(req, res, next) {
 	var client = req.user.__t == 'Client' 
 		? req.user.id
 		: null;
@@ -49,21 +50,9 @@ router.post('/create', reCaptcha, function(req, res, next) {
 	}, (err, reservation) => {
 		if (err) return next(err);
 
-		if (client) {
-			Client.findById(client, (err, client) => {
-				if (err) return next(err);
+		log.info('Reservation\'ve been created. Id: ' + reservation.id);
 
-				if (client) {
-					client.addReservation(reservation.id, (err) => {
-						if (err) return next(err)
-					});
-				}
-
-				log.info('Reservation\'ve been created');
-			})
-		}
-
-		res.status(200).send('OK');
+		return res.status(200).send('OK');
 	});
 });
 

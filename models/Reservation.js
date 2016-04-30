@@ -1,11 +1,10 @@
 var mongoose = require('../lib/mongoose'),
-    Schema   = mongoose.Schema;
+    log 	 = require('../util/log')(module),
+    Schema   = mongoose.Schema,
+    async 	 = require('async');
 
 var ReservationSchema = new Schema({
-	// client: {
-	// 	type: Schema.Types.ObjectId,
-	// 	ref: 'Client'
-	// },
+	client: { type: Schema.Types.ObjectId, required: true, ref: 'Client' },
 	company: { type: Schema.Types.ObjectId, required: true },
 	date: { type: Date, required: true },
 	message: String,
@@ -17,6 +16,8 @@ var ReservationSchema = new Schema({
 });
 
 ReservationSchema.statics.create = function(options, cb) {
+	var Client = mongoose.model('Client');
+	var Company = mongoose.model('Company');
 	var res = new this({
 						// plan: options.planId,
 						// table: options.tableId,
@@ -28,7 +29,37 @@ ReservationSchema.statics.create = function(options, cb) {
 						message: options.message
 					});
 
-	res.save(cb);
+	res.save((err, reservation) => {
+		if (err) cb(err);
+
+		async.parallel([(callback) => {
+			if (options.client) {
+				Client.findById(options.client, (err, client) => {
+						if (err) return callback(err);
+						if (!client) {
+							log.warn('There is no such client ' + options.client);
+							return callback("Client not found");
+						}
+
+						client.addReservation(reservation.id, callback);
+					})
+			};
+		}, (callback) => {
+			Company.findById(options.company, function (err, company) {
+				if (err) return callback(err);
+				if (!company) {
+					log.warn('There is no such company ' + options.company);
+					return callback("There is no such company");
+				}
+
+				company.addReservation(reservation.id, callback);
+			});
+		}], (err) => {
+			if (err) return cb(err);
+
+			cb(null, reservation);
+		});
+	});
 }
 
 //todo:
