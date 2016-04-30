@@ -12,7 +12,7 @@ var ReservationSchema = new Schema({
 	persons: Number,
 	order: Schema.Types.ObjectId,
 	created: { type: Date, default: Date.now },
-	isResponsed: { type: Boolean, default: false }
+	status: { type: String, default: 'New'}
 });
 
 ReservationSchema.statics.create = function(options, cb) {
@@ -60,6 +60,17 @@ ReservationSchema.statics.create = function(options, cb) {
 			cb(null, reservation);
 		});
 	});
+}
+
+ReservationSchema.methods.refresh = function(options, cb) {
+	if (this.company != options.company) return cb("Access denied!");
+
+	this.date = options.date;
+	this.status = options.status;
+	this.persons = options.persons;
+	this.time = options.time;
+
+	this.save(cb);
 }
 
 //todo:

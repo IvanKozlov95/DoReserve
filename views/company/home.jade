@@ -18,7 +18,7 @@ block content
 				each res, ind in reservations
 					tr(id = '' + res._id)
 						td 
-							a(href='/reservations/?id=' + res.id)= ind
+							a(href='/reservations/?id=' + res._id)= ind
 						td
 							p= res.client.name
 						td

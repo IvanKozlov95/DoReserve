@@ -56,48 +56,18 @@ router.post('/create', auth.mustClient, reCaptcha, function(req, res, next) {
 	});
 });
 
-router.post('/asdasd',  reCaptcha, function(req, res, next) {
-	var planId = req.body.plan,
-		tableId = req.body.table,
-		date = req.body.date,
-		time = {
-			from: req.body['start-time'],
-			to: req.body['end-time']
-		},
-		client = req.user && req.user.id,
-		persons = req.body.persons;
-
-
-	Plan.findById(planId, function(err, plan) {
+router.post('/update', auth.mustCompany, function(req, res, next) {
+	Reservation.findById(req.body.reservation, (err, reservation) => {
 		if (err) return next(err);
 
-		log.info(req.body);
-
-		if (plan) {
-			plan.findTable(tableId, function(err, table) {
+		if (reservation) {
+			reservation.refresh(req.body, (err, r) => {
 				if (err) return next(err);
 
-				if (table) {
-					Reservation.create({
-						plan: planId,
-						table: tableId,
-						date: date,
-						time: time,
-						client: client,
-						persons: persons
-					}, function(err, reserve) {
-						if (err) return next(err);
-
-						req.user.addReservation(reserve.id, function(err) {
-							if (err) return next(err);
-						});
-
-						res.redirect('/user/home');
-					});
-				}
+				log.info('Reservation\'ve been updated. Id: ' + r.id);
 			});
 		}
-	});
-});
+	})
+})
 
 module.exports = router;
