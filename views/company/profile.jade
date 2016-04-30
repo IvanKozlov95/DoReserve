@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+	h2 Company
+	h2= company.name
+	h2 Address
+	h2= company.address
+	h2 Phone
+	h2= company.phone
+	h2 Email
+	h2= company.email
+	h2 Description
+	h3= company.desc
+	div(style='float:right').avatar
+		img(src='/logos/' + company.logo alt='logo' height=200 width=150)

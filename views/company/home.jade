@@ -1,0 +1,32 @@
+extends ../layout
+
+block head
+	script(src="/js/company.js")
+
+block content
+	div(id='' + company._id).profile
+		h2= company.name
+		div(class='avatar')
+		table(id='new-reservations').table
+			h4 Reservations
+			thead
+				tr
+					th #
+					th Name
+					th Info
+			tbody
+				each res, ind in reservations
+					tr(id = '' + res._id)
+						td 
+							a(href='/reservations/?id=' + res.id)= ind
+						td
+							p= res.client.name
+						td
+							p= res.date
+						td
+							p= res.message
+						td
+							input(type='hidden' value='' + res._id)
+							input(type='select')
+							button.btn#reply Reply
+							button.btn Reject
