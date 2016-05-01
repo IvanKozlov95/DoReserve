@@ -19,9 +19,11 @@ router.get('/home', auth.mustCompany, function(req, res, next) {
 			if (company) {
 				company.getReservations(null, (err, reservations) => {
 					if (err) return next(err);
+					log.info(reservations[0])
 					res.render('company/home', {
 						company: company,
-						reservations: reservations
+						reservations: reservations,
+						stList: Reservation.statusList()
 					});
 				})
 			} else {

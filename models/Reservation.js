@@ -3,16 +3,23 @@ var mongoose = require('../lib/mongoose'),
     Schema   = mongoose.Schema,
     async 	 = require('async');
 
+var statuses = {
+	0: 'New',
+	1: 'Pending',
+	2: 'Resolved',
+	3: 'Rejected'
+}
+
 var ReservationSchema = new Schema({
 	client: { type: Schema.Types.ObjectId, required: true, ref: 'Client' },
-	company: { type: Schema.Types.ObjectId, required: true },
+	company: { type: Schema.Types.ObjectId, required: true, ref: 'Company' },
 	date: { type: Date, required: true },
 	message: String,
 	time: { type: String, required: true },
 	persons: Number,
 	order: Schema.Types.ObjectId,
 	created: { type: Date, default: Date.now },
-	status: { type: String, default: 'New'}
+	status: { type: Number, default: 0}
 });
 
 ReservationSchema.statics.create = function(options, cb) {
@@ -72,6 +79,8 @@ ReservationSchema.methods.refresh = function(options, cb) {
 
 	this.save(cb);
 }
+
+ReservationSchema.statics.statusList = function() { return statuses; }
 
 //todo:
 //	implement order
