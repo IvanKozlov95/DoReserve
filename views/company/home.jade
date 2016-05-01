@@ -12,11 +12,15 @@ block content
 			thead
 				tr
 					th #
-					th Name
-					th Info
+					th Client
+					th Date
+					th Message
+					th Status
+					th Actions
 			tbody
 				each res, ind in reservations
 					tr(id = '' + res._id)
+						input(type='hidden' value='' + res._id)
 						td 
 							a(href='/reservations/?id=' + res._id)= ind
 						td
@@ -26,7 +30,14 @@ block content
 						td
 							p= res.message
 						td
-							input(type='hidden' value='' + res._id)
-							input(type='select')
+							#select-status-container
+								select
+									each option, ind in stList
+										if res.status == ind
+											alert('asd')
+											option(value=''+ind selected='')= option
+										else
+											option(value=''+ind)= option
+						td
 							button.btn#reply Reply
 							button.btn Reject
