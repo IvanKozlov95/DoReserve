@@ -33,12 +33,42 @@ function createUsers(cb) {
 	}, cb);
 }
 
+function createReservations(cb) {
+	createSingleReservation('Ivan', 'company1', cb);
+	createSingleReservation('Vasya', 'company1', cb);
+}
+
+
+function createSingleReservation(clientName, companyName, cb) {
+	var User = mongoose.model('User');
+	var Reservation = mongoose.model('Reservation');
+
+	async.parallel([ (callback) => {
+			User.find({username: clientName}, callback);
+		}, (callback) => {
+			User.find({username: companyName}, callback);
+		} ], (err, results) => {
+			if (err) return cb(err);
+
+			clientId = results[0][0].id;
+			companyId = results[1][0].id;
+			console.log(companyId);
+			Reservation.create({
+				client: clientId,
+				company: companyId,
+				date: new Date(),
+				time: '99:99',
+			}, cb);
+		});
+}
+
 async.series([
 	open,
 	dropDatabase,
 	requireModels,
-	createUsers
-	], function(err, res) {
+	createUsers,
+	createReservations,
+	], function(err) {
 		if (!err) {
 			log.info("Test db've been created");
 		} else {
