@@ -8,8 +8,7 @@ function sendMail(mailOptions) {
 	validate(mailOptions);
 
 	transport.sendMail(mailOptions, (err) => {
-		log.error(err);
-		log.info(mailOptions);
+		if (err) log.error(err);
 	});
 }
 
