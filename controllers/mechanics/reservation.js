@@ -1,18 +1,14 @@
 var express     = require('express'),
 	router 	    = express.Router(),
 	reCaptcha   = require('../../middleware/reCaptcha'),
-	checkFields = require('../../middleware/checkFields'),
 	auth		= require('../../middleware/authMw'),
 	mongoose    = require('../../lib/mongoose'),
-	ObjectId    = mongoose.Types.ObjectId;
 	Reservation = mongoose.model('Reservation'),
-	Plan 	    = mongoose.model('Plan'),
-	Company 	= mongoose.model('Company'),
-	Client 		= mongoose.model('Client'),
+	mailer		= require('../../util/mailer');
 	log 	    = require('../../util/log')(module);
 
 router.get('/:id', function(req, res, next) {
-	// cast to id 
+	var ObjectId = mongoose.Types.ObjectId;
 	try {
 		var id = new ObjectId(req.params.id)
 	} catch (e) { }
@@ -57,17 +53,27 @@ router.post('/create', auth.mustClient, reCaptcha, function(req, res, next) {
 });
 
 router.post('/update', auth.mustCompany, function(req, res, next) {
-	Reservation.findById(req.body.reservation, (err, reservation) => {
-		if (err) return next(err);
+	Reservation
+		.findById(req.body.reservation)
+		.populate('client')
+		.exec( (err, reservation) => {
+			if (err) return next(err);
+			
+			if (reservation) {
+				reservation.refresh(req.body, (err, r) => {
+					if (err) return next(err);
 
-		if (reservation) {
-			reservation.refresh(req.body, (err, r) => {
-				if (err) return next(err);
+					mailer({
+						from: req.user.email,
+						to: reservation.client.email,
+						subject: 'Reservation status',
+						text: 'Your reservation\'s have just been updated.\n Curren status is: ' + r.getStatus()
+					})
 
-				log.info('Reservation\'ve been updated. Id: ' + r.id);
-			});
-		}
-	})
+					log.info('Reservation\'ve been updated. Id: ' + r.id);
+				});
+			}
+		});
 })
 
 module.exports = router;

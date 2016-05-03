@@ -72,12 +72,16 @@ ReservationSchema.statics.create = function(options, cb) {
 ReservationSchema.methods.refresh = function(options, cb) {
 	if (this.company != options.company) return cb("Access denied!");
 
-	this.date = options.date;
-	this.status = options.status;
-	this.persons = options.persons;
-	this.time = options.time;
+	this.date = options.date || this.date;
+	this.status = options.status || this.status;
+	this.persons = options.persons || this.persons;
+	this.time = options.time || this.time;
 
 	this.save(cb);
+}
+
+ReservationSchema.methods.getStatus = function() {
+	return statuses[this.status];
 }
 
 ReservationSchema.statics.statusList = function() { return statuses; }
