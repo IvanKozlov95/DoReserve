@@ -13,6 +13,18 @@ var CompanySchema = new Schema({
   reservations: [ { type: Schema.Types.ObjectId, ref: 'Reservation' } ]
 });
 
+CompanySchema.methods.toJSON = function() {
+  return {
+    // id: this.id,
+    name: this.name,
+    email: this.email,
+    phone: this.phone,
+    address: this.address,
+    // logo: this.logo, 
+    description: this.desc
+  }
+}
+
 CompanySchema.methods.getPlans = function(cb) { 
 	Plan.find({ company: this._id }, function(err, plans) {
 		if (err) cb(err);
