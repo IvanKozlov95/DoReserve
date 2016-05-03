@@ -1,0 +1,24 @@
+extends ../layout
+
+block head
+	link(href='/css/profile.css' rel='stylesheet')
+
+block content
+	#logo.col-sm-4.col-sm-offset-8
+		img(src=user.logo alt='your logo here')
+	if (edit)
+		form(action='/user/update' method='POST').form-horizontal
+			input(type='hidden' name='id' value=user._id)
+			each field, name in json
+				.formgroup.row
+					label.col-sm-2.control-label.text-capitalize= name
+					.col-sm-6
+						input(type='text' name=field placeholder='your '+name value=field).form-control
+			.col-sm-offset-2
+				input(type='submit' value='Save').btn.btn-primary.btn-md
+	else
+		each field, name in json
+			p.text-primary.text-capitalize= name
+			p.big= field
+		.control-panel
+			button.btn.btn-primary.btn-md(onclick='window.location.href="/user/profile?edit=true"') Edit

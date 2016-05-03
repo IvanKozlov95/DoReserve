@@ -21,12 +21,14 @@ body
 				a(href='/').navbar-brand DoReserve
 			div(id='navbar' class='navbar-collapse collapse')
 				ul(class='nav navbar-nav')
-					li.active
+					li
 						a(href='/user/home') Home
 					li
 						a(href='/company/all') Companies
 					li
 						a(href='#') About
+					li
+						a(href='/user/profile') Profile
 				//- login 
 				if !user
 					form(class='navbar-form navbar-right' action='/login' method='post')
