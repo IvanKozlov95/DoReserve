@@ -7,23 +7,19 @@ var express   	  = require('express'),
 	Reservation   = mongoose.model('Reservation'),
 	log 	      = require('../../util/log')(module);
 
-router.get('/', auth.mustCompany, (req, res, next) => {
-	res.render('company');
-});
-
 router.get('/home', auth.mustCompany, function(req, res, next) {
-	Company
-		.findById(req.user.id, (err, company) => {
+	var edit = req.query.edit;
+	Company.findById(req.user.id, (err, company) => {
 			if (err) return next(err);
 
 			if (company) {
 				company.getReservations(null, (err, reservations) => {
 					if (err) return next(err);
-					log.info(reservations[0])
 					res.render('company/home', {
 						company: company,
 						reservations: reservations,
-						stList: Reservation.statusList()
+						stList: Reservation.statusList(),
+						edit: edit
 					});
 				})
 			} else {
@@ -31,6 +27,17 @@ router.get('/home', auth.mustCompany, function(req, res, next) {
 				res.status(404).end();
 			}
 		});
+});
+
+router.get('/reservations', auth.mustCompany, function(req, res, next) {
+	Reservation.find({ company: req.user.id }, (err, reservations) => {
+		if (err) return next(err);
+
+		res.render('reservation/list', {
+			company: company,
+			reservations: reservations
+		});
+	})
 });
 
 router.get('/all', function(req, res, next) {
