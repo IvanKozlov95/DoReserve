@@ -3,5 +3,12 @@
 	"mongoose": {
 		"uri": "mongodb://localhost/doreserve",
 		"dbname": "test"
+	},
+	"mail": {
+		"service": "Gmail",
+		"auth": {
+			"user": "doreserveteam@gmail.com",
+			"pass": "TAvecus5"
+		}
 	}
 }
