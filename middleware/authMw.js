@@ -21,3 +21,9 @@ exports.mustAnon = function(req, res, next) {
 		? res.redirect('/')
 		: next();
 }
+
+exports.mustClientOrAnon = function(req, res, next) {
+	(req.isAuthenticated() && req.user.__t == 'Company')
+		? res.redirect('/')
+		: next();
+}
