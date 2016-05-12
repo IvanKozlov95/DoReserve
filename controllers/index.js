@@ -7,3 +7,4 @@ exports.Reservation	 = require('./mechanics/reservation');
 exports.login		 = require('./login');
 exports.register 	 = require('./register');
 exports.logout 		 = require('./logout');
+exports.test 		 = require('./test');

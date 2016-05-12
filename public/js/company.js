@@ -1,15 +1,20 @@
 (function() {
   $(document).ready(function() {
-    return $('#reply').click(function(ev) {
+    return $('.btn-reply').click(function(ev) {
       var resId;
       resId = $(ev.target).closest('tr').attr('id');
       return $.ajax({
         url: '/reservation/update',
         method: 'POST',
         data: {
-          company: $('div .profile').attr('id'),
+          company: $('input[name=company]').val(),
           reservation: resId,
-          status: 'asd'
+          status: $('#' + resId + ' option:selected').val()
+        },
+        statusCode: {
+          200: function() {
+            return $.notify("Updated!", "info");
+          }
         }
       });
     });

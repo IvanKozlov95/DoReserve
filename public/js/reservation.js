@@ -1,7 +1,9 @@
 (function() {
-  var fillModalFields, getCompanyInfo, makeReservation, modalId;
+  var fillModalFields, getCompanyInfo, makeReservation, modalId, user;
 
   modalId = '#exampleModal';
+
+  user = {};
 
   $(window).on('load', function() {
     $(modalId).on('show.bs.modal', function(event) {
@@ -75,6 +77,10 @@
         }
       }
     });
+  };
+
+  window.setUser = function(user) {
+    return user = user;
   };
 
 }).call(this);
