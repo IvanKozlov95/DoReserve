@@ -4,40 +4,16 @@ block head
 	script(src="/js/company.js")
 
 block content
+	if edit
+		form(role='form')
+			h2.form-heaing= company.name
+			.form-group
+				input(type='text' name='name' placeholder='Company name' value='' + company.name)
+
+	.control-panel
+		button(type='button' class='btn btn-primary btn-md' onclick='window.location.href="/company/home?edit=true"') Edit
+		button(type='button' class='btn btn-primary btn-md' onclick='window.location.href="/company/reservations"') Reservations
 	div(id='' + company._id).profile
 		h2= company.name
 		div(class='avatar')
-		table(id='new-reservations').table
-			h4 Reservations
-			thead
-				tr
-					th #
-					th Client
-					th Date
-					th Message
-					th Status
-					th Actions
-			tbody
-				each res, ind in reservations
-					tr(id = '' + res._id)
-						input(type='hidden' value='' + res._id)
-						td 
-							a(href='/reservations/?id=' + res._id)= ind
-						td
-							p= res.client.name
-						td
-							p= res.date
-						td
-							p= res.message
-						td
-							#select-status-container
-								select
-									each option, ind in stList
-										if res.status == ind
-											alert('asd')
-											option(value=''+ind selected='')= option
-										else
-											option(value=''+ind)= option
-						td
-							button.btn#reply Reply
-							button.btn Reject
+
