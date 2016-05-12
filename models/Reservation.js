@@ -1,7 +1,6 @@
 var mongoose = require('../lib/mongoose'),
-    log 	 = require('../util/log')(module),
-    Schema   = mongoose.Schema,
-    async 	 = require('async');
+	Schema   = mongoose.Schema,
+	async 	 = require('async');
 
 var statuses = {
 	0: 'New',
@@ -70,10 +69,7 @@ ReservationSchema.statics.create = function(options, cb) {
 }
 
 ReservationSchema.methods.refresh = function(options, cb) {
-	if (this.company != options.company) return cb("Access denied!");
-
 	this.date = options.date || this.date;
-	this.status = options.status || this.status;
 	this.persons = options.persons || this.persons;
 	this.time = options.time || this.time;
 
@@ -82,6 +78,35 @@ ReservationSchema.methods.refresh = function(options, cb) {
 
 ReservationSchema.methods.getStatus = function() {
 	return statuses[this.status];
+}
+
+ReservationSchema.methods.updateStatus = function(status) {
+	var mailer = require('../util/mailer');
+
+	if (this.status == status) return;
+
+	this.status = status;
+
+	// sending emails
+	async.parallel([
+			(callback) => {
+				Client.findById(this.client, callback);
+			},
+			(callback) => {
+				Company.findById(this.company, callback);
+			}
+		], (err, result) => {
+			if (err) log.error(err);
+
+			mailer({
+				from: result[0].email,
+				to: result[1].email,
+				subject: 'Reservation status',
+				text: 'Your reservation\'s have just been updated.\n Curren status is: ' + statuses[this.status]
+			});
+		});
+
+	log.info('Reservation\'s status been updated. Id: ' + this.id);
 }
 
 ReservationSchema.statics.statusList = function() { return statuses; }
