@@ -30,22 +30,31 @@ router.get('/home', auth.mustCompany, function(req, res, next) {
 });
 
 router.get('/reservations', auth.mustCompany, function(req, res, next) {
-	Reservation.find({ company: req.user.id }, (err, reservations) => {
+	Reservation
+		.find({ company: req.user.id })
+		.populate('client')
+		.exec((err, reservations) => {
 		if (err) return next(err);
 
 		res.render('reservation/list', {
-			company: company,
-			reservations: reservations
+			company: req.user._id,
+			reservations: reservations,
+			stList: Reservation.statusList()
 		});
-	})
+	});
 });
 
 router.get('/all', function(req, res, next) {
+	var user = req.user.__t == 'Client'
+		? req.user
+		: null;
+
 	Company.find({}, function(err, companies) {
 		if (err) return next(err);
 
 		res.render('company/list', {
-			companies: companies
+			companies: companies,
+			user: user
 		});
 	});
 });
