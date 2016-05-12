@@ -8,7 +8,10 @@ function sendMail(mailOptions) {
 	validate(mailOptions);
 
 	transport.sendMail(mailOptions, (err) => {
-		if (err) log.error(err);
+		if (err) return log.error(err);
+		
+		var info = arguments[0];
+		log.info('Just sent an email form: ' + info.from + ' to: ' + info.to);
 	});
 }
 
