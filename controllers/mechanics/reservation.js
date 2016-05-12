@@ -31,10 +31,23 @@ router.get('/:id', function(req, res, next) {
 	})
 });
 
-router.post('/create', auth.mustClient, reCaptcha, function(req, res, next) {
-	var client = req.user.__t == 'Client' 
-		? req.user.id
-		: null;
+router.post('/create', auth.mustClientOrAnon, reCaptcha, function(req, res, next) {
+	var client;
+	var Company = mongoose.model('Company');
+
+	if (res.user) {
+		client = req.user.id;
+	} else {
+		var Client = mongoose.model('Client');
+
+		Client.createAnon({
+			email: req.body.email
+		}, (err, user) => {
+			if (err) return next(err);
+			log.info('New user have been created. Id: ' + user.id);
+			client = user.id;
+		});
+	}
 
 	Reservation.create({
 		date: req.body.date,
@@ -53,25 +66,22 @@ router.post('/create', auth.mustClient, reCaptcha, function(req, res, next) {
 });
 
 router.post('/update', auth.mustCompany, function(req, res, next) {
+	if (req.user.id != req.body.company)  return res.status(403).end();
+
 	Reservation
 		.findById(req.body.reservation)
-		.populate('client')
 		.exec( (err, reservation) => {
 			if (err) return next(err);
 			
 			if (reservation) {
-				reservation.refresh(req.body, (err, r) => {
+				reservation.refresh(req.body, (err) => {
 					if (err) return next(err);
-
-					mailer({
-						from: req.user.email,
-						to: reservation.client.email,
-						subject: 'Reservation status',
-						text: 'Your reservation\'s have just been updated.\n Curren status is: ' + r.getStatus()
-					})
-
-					log.info('Reservation\'ve been updated. Id: ' + r.id);
+					log.info('Reservation\'ve been updated');
+					res.status(200).end();
 				});
+			} else {
+				log.warn('Reservation is missing. Hmm...');
+				res.status(404).end();
 			}
 		});
 })
