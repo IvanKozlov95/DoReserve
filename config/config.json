@@ -10,5 +10,8 @@
 			"user": "doreserveteam@gmail.com",
 			"pass": "TAvecus5"
 		}
+	},
+	"logs": {
+		"file": "logs/logs.txt"
 	}
 }
