@@ -72,7 +72,7 @@ ReservationSchema.methods.refresh = function(options, cb) {
 	this.date = options.date || this.date;
 	this.persons = options.persons || this.persons;
 	this.time = options.time || this.time;
-
+	this.updateStatus(options.status);
 	this.save(cb);
 }
 
@@ -82,11 +82,12 @@ ReservationSchema.methods.getStatus = function() {
 
 ReservationSchema.methods.updateStatus = function(status) {
 	var mailer = require('../util/mailer');
+	var Client = mongoose.model('Client');
+	var Company = mongoose.model('Company');
 
 	if (this.status == status) return;
 
 	this.status = status;
-
 	// sending emails
 	async.parallel([
 			(callback) => {
@@ -99,10 +100,10 @@ ReservationSchema.methods.updateStatus = function(status) {
 			if (err) log.error(err);
 
 			mailer({
-				from: result[0].email,
-				to: result[1].email,
+				from: result[1].email,
+				to: result[0].email,
 				subject: 'Reservation status',
-				text: 'Your reservation\'s have just been updated.\n Curren status is: ' + statuses[this.status]
+				html: '<p>Your reservation\'s have just been updated.</p><p>Curren status is: ' + statuses[this.status] + '</p><p><a href="http://localhost:8080">Link</a></p>'
 			});
 		});
 
