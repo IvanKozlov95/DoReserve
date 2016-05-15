@@ -1,8 +1,9 @@
-var mongoose 	= require('../lib/mongoose'),
-    Schema   	= mongoose.Schema,
-    User     	= mongoose.model('User'),
-    async 	 	= require('async'),
-    crypto   = require('crypto');
+var mongoose 	 = require('../lib/mongoose'),
+    Schema   	 = mongoose.Schema,
+    User     	 = mongoose.model('User'),
+    async 	 	 = require('async'),
+    crypto     = require('crypto'),
+    commonUtil = require('../util/common');
 
 var ClientSchema = new Schema({
   reservations: [ Schema.Types.ObjectId ],
@@ -11,14 +12,25 @@ var ClientSchema = new Schema({
 });
 
 ClientSchema.statics.createAnon = function(options, cb) {
-  var client = new this({
-    username: crypto.createHmac('sha1', Math.random() + '').update(Date.now).digest('hex'),
-    password: Math.random() + '',
-    name: 'Anonymous',
-    email: options.email
-  });
-
-  client.save(cb);
+  commonUtil
+    .checkEmail(options.email)
+      .then(
+        result => {
+          if (result) {
+              new this({
+                username: crypto.createHmac('sha1', Math.random() + '').update(Date.now.toString()).digest('hex'),
+                password: Math.random() + '',
+                name: 'Anonymous',
+                email: options.email
+              })
+              .save(cb);
+          } else {
+            cb('Email is taken');
+          }
+        },
+        err => {
+          return next(err);
+        });
 }
 
 ClientSchema.methods.getReservations = function(filter, cb) {
