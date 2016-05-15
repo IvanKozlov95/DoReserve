@@ -4,3 +4,4 @@ coffee/*
 .vscode/*
 public/logos/*
 *todo*
+logs/*
