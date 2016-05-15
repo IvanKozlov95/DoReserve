@@ -1,6 +1,8 @@
 var mongoose = require('../lib/mongoose'),
 	Schema   = mongoose.Schema,
-	async 	 = require('async');
+	async 	 = require('async'),
+	mailer = require('../util/mailer');
+
 
 var statuses = {
 	0: 'New',
@@ -24,6 +26,7 @@ var ReservationSchema = new Schema({
 ReservationSchema.statics.create = function(options, cb) {
 	var Client = mongoose.model('Client');
 	var Company = mongoose.model('Company');
+	var cleintEmail, companyEmail;
 	var res = new this({
 						// plan: options.planId,
 						// table: options.tableId,
@@ -47,6 +50,7 @@ ReservationSchema.statics.create = function(options, cb) {
 							return callback("Client not found");
 						}
 
+						cleintEmail = client.email;
 						client.addReservation(reservation.id, callback);
 					})
 			};
@@ -58,10 +62,19 @@ ReservationSchema.statics.create = function(options, cb) {
 					return callback("There is no such company");
 				}
 
+				companyEmail = company.email;
 				company.addReservation(reservation.id, callback);
 			});
 		}], (err) => {
 			if (err) return cb(err);
+
+
+			mailer({
+				from: companyEmail,
+				to: cleintEmail,
+				subject: 'New Reservation',
+				html: '<p>Your reservation\'ve just been created.</p><p>Curren status is: ' + statuses[res.status] + '</p><p><a href="http://localhost:8080">Link</a></p>'
+			});
 
 			cb(null, reservation);
 		});
@@ -81,7 +94,6 @@ ReservationSchema.methods.getStatus = function() {
 }
 
 ReservationSchema.methods.updateStatus = function(status) {
-	var mailer = require('../util/mailer');
 	var Client = mongoose.model('Client');
 	var Company = mongoose.model('Company');
 
