@@ -47,8 +47,9 @@
         id: id
       },
       complete: function(jqXHR, status) {
+        console.log(jqXHR.responseJSON);
         if (status === 'success') {
-          return cb(null, jqXHR.responseJSON.company);
+          return cb(null, jqXHR.responseJSON);
         } else {
           return cb(status);
         }
@@ -74,6 +75,9 @@
         },
         403: function() {
           return grecaptcha.reset();
+        },
+        409: function() {
+          return $.notify('Email is alredy taken');
         }
       }
     });
