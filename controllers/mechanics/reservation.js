@@ -34,35 +34,43 @@ router.get('/:id', function(req, res, next) {
 router.post('/create', auth.mustClientOrAnon, reCaptcha, function(req, res, next) {
 	var client;
 	var Company = mongoose.model('Company');
-
-	if (res.user) {
-		client = req.user.id;
-	} else {
-		var Client = mongoose.model('Client');
-
-		Client.createAnon({
-			email: req.body.email
-		}, (err, user) => {
-			if (err) return next(err);
-			log.info('New user have been created. Id: ' + user.id);
-			client = user.id;
-		});
-	}
-
-	Reservation.create({
-		date: req.body.date,
-		time: req.body.time,
-		persons: req.body.persons,
-		client: client,
-		company: req.body.company,
-		message: req.body.message
-	}, (err, reservation) => {
-		if (err) return next(err);
-
-		log.info('Reservation\'ve been created. Id: ' + reservation.id);
-
-		return res.status(200).send('OK');
+	var Client = mongoose.model('Client');
+	var promise = new Promise((resolve, reject) => {
+		if (req.user && req.user.email == req.body.email) {
+			resolve(req.user.id);
+		} else {
+			Client.createAnon({
+				email: req.body.email
+			}, (err, user) => {
+				if (err) reject(err);
+				log.info('New user have been created. Id: ' + user.id);
+				resolve(user.id);
+			});
+		}
 	});
+	
+	promise
+		.then(
+			client => {
+				Reservation.create({
+					date: req.body.date,
+					time: req.body.time,
+					persons: req.body.persons,
+					client: client,
+					company: req.body.company,
+					message: req.body.message
+				}, (err, reservation) => {
+					if (err) return next(err);
+
+					log.info('Reservation\'ve been created. Id: ' + reservation.id);
+
+					return res.status(200).send('OK');
+				});
+			},
+			error => {
+				return next(error);
+			}
+		);
 });
 
 router.post('/update', auth.mustCompany, function(req, res, next) {
