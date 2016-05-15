@@ -45,9 +45,9 @@ router.get('/reservations', auth.mustCompany, function(req, res, next) {
 });
 
 router.get('/all', function(req, res, next) {
-	var user = req.user.__t == 'Client'
+	var user = (req.user && req.user.__t == 'Client')
 		? req.user
-		: null;
+		: {};
 
 	Company.find({}, function(err, companies) {
 		if (err) return next(err);
@@ -75,16 +75,16 @@ router.get('/plans', function(req, res, next) {
 });
 
 router.get('/info', function(req, res, next) {
-	Company.findById(req.query.id, function(err, company) {
-		if (err) return next(err);
-
-		if (company) 
-			res.status(200).json({ 
-				company: company
-			});
-		else 
-			res.status(404).end();
-	})
+	Company
+		.findById(req.query.id)
+		.lean()
+		.exec(function(err, company) {
+			if (err) return next(err);
+			if (company) 
+				res.status(200).json(company);
+			else 
+				res.status(404).end();
+		})
 });
 
 router.get('/:id', function(req, res, next) {
