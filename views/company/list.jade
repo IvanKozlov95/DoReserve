@@ -17,7 +17,7 @@ block content
 			each company, ind in companies
 				tr
 					td 
-						a(href=company.id) Logo
+					a(href=company.id) Logo
 					td
 						p= company.name
 					td
@@ -47,16 +47,17 @@ block content
 							.col-xs-4
 								.form-group
 									label.control-label(for='persons') Persons
-									input#persons(type='number' name='persons').form-control
+								input#persons(type='number' name='persons').form-control
 						.row
-							.col-xs-4
+							.col-xs-6
 								.form-group
 									label.control-label(for='email') Email
-									input#phone(type='email' name='email' required='').form-control
-							.col-xs-6.col-xs-offset-2
-								.form-group
-									label.control-label(for='phone') Phone
-									input#phone(type='tel' name='phone' pattern='+79[0-9]{9}').form-control
+									input#phone(type='email' name='email' required='' value='' + user.email).form-control
+							.col-xs-6
+							//- .col-xs-6.col-xs-offset-2
+							//- 	.form-group
+							//- 		label.control-label(for='phone') Phone
+							//- 		input#phone(type='tel' name='phone' pattern='+7[0-9]{9}').form-control
 						.row
 							.col-xs-12
 								.form-group
