@@ -2,7 +2,10 @@ var express   = require('express'),
 	router 	  = express.Router(),
 	auth 	  = require('../../middleware/authMw'),
 	mongoose  = require('../../lib/mongoose'),
-	log 	  = require('../../util/log')(module);
+	log 	  = require('../../util/log')(module),
+	storages  = require('../../util/storages'),
+ 	multer	  = require('multer'),
+ 	upload	  = multer({ storage: storages.logoStorage });
 
 router.get('/home', auth.mustAuthenticated, function(req, res, next) {
 	res.redirect('/' + req.user.__t + '/home');
@@ -26,7 +29,9 @@ router.get('/profile', auth.mustAuthenticated, function(req, res, next) {
 		})
 });
 
-router.post('/update', auth.mustAuthenticated, function(req, res, next) {
+router.post('/update', upload.single('logo'), auth.mustAuthenticated, function(req, res, next) {
+	log.info('here');
+	log.info(req.body.logo);
 	if (req.user.id != req.body.id) {
 		return res.status(403).end();
 	}
