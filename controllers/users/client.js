@@ -14,8 +14,8 @@ router.get('/home', mw.mustClient, function(req, res, next) {
 		client.getReservations(null, function(err, reservations) {
 			if (err) return next(err);
 
-			res.render('user/client', {
-				user: client,
+			res.render('client/home', {
+				client: client.toJSON(),
 				reservations: reservations
 			});
 		});
