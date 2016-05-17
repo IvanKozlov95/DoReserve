@@ -11,6 +11,17 @@ var ClientSchema = new Schema({
   friends: []
 });
 
+ClientSchema.methods.toJSON = function() {
+  return {
+    id: this.id,
+    username: this.username,
+    name: this.name,
+    email: this.email,
+    phone: this.phone,
+    logo: this.logo
+  }
+}
+
 ClientSchema.statics.createAnon = function(options, cb) {
   commonUtil
     .checkEmail(options.email)
@@ -35,7 +46,8 @@ ClientSchema.statics.createAnon = function(options, cb) {
 
 ClientSchema.methods.getReservations = function(filter, cb) {
 	//todo: add filter
-	log.info(this.reservations);
+  var Reservation = mongoose.model('Reservation');
+
 	async.map(this.reservations, function(item, callback) {
     Reservation.findById(item, callback);
   }, cb);
