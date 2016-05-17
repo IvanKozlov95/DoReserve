@@ -1,0 +1,24 @@
+extends ..\layout
+
+block content
+	div(id='' + client.id).profile
+		form(role='form' action='/user/update' method='POST' enctype='multipart/form-data')
+			h2.form-heading= client.name
+			each value, field in client
+				if (field == 'id' || field == 'name' || field == 'logo') 
+					- continue;
+				.row
+					.form-group
+						.col-md-1
+							label= field
+						.col-md-2.col-md-offset-1
+							input(type='text' name=field placeholder='Your ' + field value=value)
+			.row
+				.form-group
+					.col-md-1
+						label Avatar
+					.col-md-2.col-md-offset-1
+						input(type='file' name='logo')
+			input(type='submit' value='Save').btn.btn-md.btn-primary 
+		div(class='avatar')
+			img(src=client.logo alt='avatar')
