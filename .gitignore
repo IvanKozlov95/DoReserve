@@ -1,7 +1,5 @@
 node_modules/*
-coffee/*
 *gulp*
 .vscode/*
-public/logos/*
 *todo*
 logs/*
