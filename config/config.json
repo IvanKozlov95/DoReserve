@@ -11,7 +11,8 @@
 			"pass": "TAvecus5"
 		}
 	},
-	"logs": {
-		"file": "logs/logs.txt"
+	"dirs": {
+		"root": "f:\\GitHub\\DoReserve",
+		"logs": "f:\\GitHub\\DoReserve\\logs"
 	}
 }
