@@ -3,12 +3,14 @@ var mongoose 	 = require('../lib/mongoose'),
     User     	 = mongoose.model('User'),
     async 	 	 = require('async'),
     crypto     = require('crypto'),
-    commonUtil = require('../util/common');
+    commonUtil = require('../util/common'),
+    log        = require('../util/log')(module);
 
 var ClientSchema = new Schema({
   reservations: [ Schema.Types.ObjectId ],
   favoriteCompanies: [],
-  friends: []
+  friends: [],
+  logo: String
 });
 
 ClientSchema.methods.toJSON = function() {
@@ -57,6 +59,20 @@ ClientSchema.methods.addReservation = function(reserve, cb) {
   if (reserve) {
     this.reservations.push(reserve);
     this.save(cb);
+  }
+}
+
+ClientSchema.methods.updateLogo = function(logo) {
+  var fs     = require('fs');
+  var config = require('config');
+
+  if (logo) {
+    try {
+      fs.unlinkSync(config.get('dirs:root') + '\\public\\logos\\' + this.logo);
+      this.logo = logo;
+    } catch (e) {
+      log.warn(e.message);
+    }
   }
 }
 
