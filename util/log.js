@@ -1,5 +1,6 @@
 var winston = require('winston');
 var ENV = 'development' || process.env.NODE_ENV;
+var config = require('config');
 
 // доки: https://www.npmjs.com/package/winston
 function getLogger(module) {
@@ -13,7 +14,7 @@ function getLogger(module) {
                 label: path
             }),
             new winston.transports.File({
-                filename: 'logs/logs.txt'
+                filename: config.get('dirs:logs') + '\\log.txt'
             })
         ]
     });

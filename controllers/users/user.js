@@ -2,6 +2,7 @@ var express   = require('express'),
 	router 	  = express.Router(),
 	auth 	  = require('../../middleware/authMw'),
 	mongoose  = require('../../lib/mongoose'),
+	User      = mongoose.model('User'),
 	log 	  = require('../../util/log')(module),
 	storages  = require('../../util/storages'),
  	multer	  = require('multer'),
@@ -13,11 +14,9 @@ router.get('/home', auth.mustAuthenticated, function(req, res, next) {
 
 router.get('/profile', auth.mustAuthenticated, function(req, res, next) {
 	var edit = !!req.query.edit;
-	var User = mongoose.model('User');
 
 	User
 		.findById(req.user.id)
-		// .lean()
 		.exec((err, user) => {
 			if (err) return next(err);
 			log.info(user.toJSON());
@@ -30,8 +29,7 @@ router.get('/profile', auth.mustAuthenticated, function(req, res, next) {
 });
 
 router.post('/update', upload.single('logo'), auth.mustAuthenticated, function(req, res, next) {
-	log.info('here');
-	log.info(req.body.logo);
+
 	if (req.user.id != req.body.id) {
 		return res.status(403).end();
 	}
@@ -43,11 +41,13 @@ router.post('/update', upload.single('logo'), auth.mustAuthenticated, function(r
 			for (var i in req.body) {
 				user[i] = req.body[i];
 			}
+			
+			user.updateLogo(req.file.filename);
 			user.save((err) => {
 				if (err) return next(err);
 
 				log.info('User was updated');
-				res.redirect('/user/profile');
+				res.redirect('home');
 			});
 		} else {
 			res.status(404).end();
