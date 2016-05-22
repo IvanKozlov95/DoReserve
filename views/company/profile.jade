@@ -1,0 +1,13 @@
+extends ../layout
+
+block head
+
+block content
+	.profile
+		each value, field in company
+			if (field == 'id' || field == 'name' || field == 'logo') 
+						- continue;
+			p.text-primary.text-capitalize= field
+			p.big= value
+		div(class='avatar')
+				img(src='\\logos\\'+company.logo alt='avatar' width='150' height='200')
