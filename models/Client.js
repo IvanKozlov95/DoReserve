@@ -46,12 +46,15 @@ ClientSchema.statics.createAnon = function(options, cb) {
         });
 }
 
-ClientSchema.methods.getReservations = function(filter, cb) {
-	//todo: add filter
+ClientSchema.methods.getReservations = function(options, cb) {
   var Reservation = mongoose.model('Reservation');
 
 	async.map(this.reservations, function(item, callback) {
-    Reservation.findById(item, callback);
+    Reservation
+      .findById(item)
+      .populate('company')
+      .lean()
+      .exec(callback); 
   }, cb);
 }
 
@@ -69,11 +72,12 @@ ClientSchema.methods.updateLogo = function(logo) {
   if (logo) {
     try {
       fs.unlinkSync(config.get('dirs:root') + '\\public\\logos\\' + this.logo);
-      this.logo = logo;
     } catch (e) {
       log.warn(e.message);
     }
   }
+
+  this.logo = logo;
 }
 
 User.discriminator('Client', ClientSchema);
