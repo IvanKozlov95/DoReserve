@@ -32,7 +32,9 @@ router.get('/home', auth.mustCompany, function(req, res, next) {
 
 router.get('/reservations', auth.mustCompany, function(req, res, next) {
 	var stList = Reservation.statusList();
-	var status = [].indexOf.call(stList, req.query.status);
+	var status =  req.query.status != undefined 
+		? [].indexOf.call(stList, req.query.status)
+		: 0;
 
 	Reservation
 		.find({ company: req.user.id, status: status })
@@ -50,7 +52,7 @@ router.get('/reservations', auth.mustCompany, function(req, res, next) {
 });
 
 router.get('/all', function(req, res, next) {
-	var user = (req.user && req.user.__t == 'Client')
+	var client = (req.user && req.user.__t == 'Client')
 		? req.user
 		: {};
 
@@ -59,7 +61,7 @@ router.get('/all', function(req, res, next) {
 
 		res.render('company/list', {
 			companies: companies,
-			user: user
+			client: client
 		});
 	});
 });
