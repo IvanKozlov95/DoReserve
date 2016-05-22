@@ -4,14 +4,17 @@ var express     = require('express'),
 	auth		= require('../../middleware/authMw'),
 	mongoose    = require('../../lib/mongoose'),
 	Reservation = mongoose.model('Reservation'),
-	mailer		= require('../../util/mailer');
+	mailer		= require('../../util/mailer'),
+	HtmlError	= require('../../lib/HtmlError'),
 	log 	    = require('../../util/log')(module);
 
-router.get('/:id', function(req, res, next) {
+router.get('/', function(req, res, next) {
 	var ObjectId = mongoose.Types.ObjectId;
 	try {
-		var id = new ObjectId(req.params.id)
-	} catch (e) { }
+		var id = new ObjectId(req.query.id)
+	} catch (e) { 
+		return next(new HtmlError(404));
+	}
 
 	Reservation.findById(id, function(err, reserve) {
 		if (err) return next(err);
@@ -26,7 +29,7 @@ router.get('/:id', function(req, res, next) {
 				res.status(403).end();
 			}
 		} else {
-			res.status(404).end();
+			return next(new HtmlError(404));
 		}
 	})
 });
