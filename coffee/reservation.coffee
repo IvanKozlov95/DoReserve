@@ -4,9 +4,8 @@ user = {}
 $(window).on 'load', () ->
 	$(modalId).on 'show.bs.modal', (event) ->
 		button = $ event.relatedTarget
-		getCompanyInfo button.data('companyid'), (err, company) ->
-			err? alert('err');
-			fillModalFields company
+		getCompanyInfo button.data('companyid'), (company) ->
+			openModal company
 
 	$(modalId).on 'shown.bs.modal', () ->
 		$('#form-reserve').validator()
@@ -40,14 +39,10 @@ getCompanyInfo = (id, cb) ->
 			id: id
 		},
 		complete: (jqXHR, status) ->
-			console.log(jqXHR.responseJSON)
-			if status == 'success'
-				cb null, jqXHR.responseJSON
-			else
-				cb status 
+			cb jqXHR.responseJSON
 	}
 
-fillModalFields = (company) ->
+openModal = (company) ->
 	$ modalId + ' .modal-title'
 		.text company.name
 	$ modalId + " input[name='company']"
@@ -59,14 +54,12 @@ makeReservation = () ->
 		url: '/reservation/create',
 		method: 'POST',
 		data: do form.serialize,
-		status: {
-			200: () ->
-				alert 'ok'
-			403: () ->
-				grecaptcha.reset()
-			409: () -> 
-				$.notify('Email is alredy taken')
-		}
+		complete: (jqXHR, status) -> 
+			if (status == 'success') 
+				msgType = "info"
+			else
+				msgType = 'warn'
+			$.notify jqXHR.responseJSON, msgType
 	}
 
 

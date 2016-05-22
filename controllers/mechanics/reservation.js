@@ -64,7 +64,7 @@ router.post('/create', auth.mustClientOrAnon, reCaptcha, function(req, res, next
 
 					log.info('Reservation\'ve been created. Id: ' + reservation.id);
 
-					return res.status(200).send('OK');
+					return res.status(200).json('Reservation\'ve been created. Check your mail.');
 				});
 			},
 			error => {

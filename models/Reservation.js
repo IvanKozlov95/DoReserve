@@ -39,7 +39,7 @@ ReservationSchema.statics.create = function(options, cb) {
 					});
 
 	res.save((err, reservation) => {
-		if (err) cb(err);
+		if (err) return cb(err);
 
 		async.parallel([(callback) => {
 			if (options.client) {
