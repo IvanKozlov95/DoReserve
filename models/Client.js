@@ -4,6 +4,7 @@ var mongoose 	 = require('../lib/mongoose'),
     async 	 	 = require('async'),
     crypto     = require('crypto'),
     commonUtil = require('../util/common'),
+    HtmlError  = require('../lib/HtmlError'),
     log        = require('../util/log')(module);
 
 var ClientSchema = new Schema({
@@ -38,7 +39,7 @@ ClientSchema.statics.createAnon = function(options, cb) {
               })
               .save(cb);
           } else {
-            cb('Email is taken');
+            cb(new HtmlError(409, 'Email is already taken. Sorry.'));
           }
         },
         err => {
