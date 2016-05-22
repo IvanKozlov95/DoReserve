@@ -122,6 +122,19 @@ ReservationSchema.methods.updateStatus = function(status) {
 	log.info('Reservation\'s status been updated. Id: ' + this.id);
 }
 
+ReservationSchema.methods.getCompany = function() {
+	var Company = mongoose.model('Company');
+
+	return new Promise((resolve, reject) => {
+		Company
+			.findById(this.company)
+			.exec((err, company) => {
+				if (err) reject(err);
+				resolve(company.toJSON());
+			});
+	});
+}
+
 ReservationSchema.statics.statusList = function() { return statuses; }
 
 //todo:
