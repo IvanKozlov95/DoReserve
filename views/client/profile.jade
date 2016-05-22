@@ -1,0 +1,38 @@
+extends ../layout
+
+block head
+
+block content
+	.profile
+		each value, field in client
+			if (field == 'id' || field == 'name' || field == 'logo') 
+						- continue;
+			p.text-primary.text-capitalize= field
+			p.big= value
+		#reservations.container
+			.row
+				.col-md-1
+					p #
+				.col-md-2
+					p Company
+				.col-md-3
+					p Date
+				.col-md-2
+					p Status
+				.col-md-3
+					p Time
+		each res, ind in reservations
+			.row
+				.col-md-1
+					p= ind
+				.col-md-2
+					a(href='/company/profile?id=' + res.company._id)
+						p= res.company.name
+				.col-md-3
+					p= res.date.getDate()+'/'+res.date.getMonth()+'/'+res.date.getFullYear()
+				.col-md-2
+					p= statusList[res.status]
+				.col-md-3
+					p= res.time
+		div(class='avatar')
+				img(src='\\logos\\'+client.logo alt='avatar' width='150' height='200')
