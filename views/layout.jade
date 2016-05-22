@@ -6,6 +6,7 @@ head
 	script(src='/js/notify.js')
 	link(href='/bootstrap/bootstrap.css' rel='stylesheet')
 	link(href='/css/main.css' rel='stylesheet')
+	link(href='/css/footer.css' rel='stylesheet')
 	block head
 body
 	//- navbar
@@ -39,9 +40,12 @@ body
 				else
 					div.navbar-right
 						p.navbar-text
-							= 'Hello, ' + user.username + '! '
+							= 'Hello, ' + user.name + '! '
 							a(href='/logout') logout
 				//- login end
 	//- navbar end
 	div.container
 		block content
+	footer.footer
+		.container
+			p.text-muted Ivan Kozlov --- 2016 (c)

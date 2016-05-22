@@ -7,6 +7,9 @@ block content
 	input(type='hidden' value=''+company name='company')
 	table(id='reservations').table
 		h4 Reservations
+			a(href='/company/reservations?status=New') 	New
+			a(href='/company/reservations?status=Pending') 	Pending
+			a(href='/company/reservations?status=Rejected') 	Rejected
 		thead
 			tr
 				th #
@@ -24,7 +27,7 @@ block content
 					td
 						p= res.client.name || 'Client name'
 					td
-						p= res.date
+						p= res.date.getDate()+'/'+res.date.getMonth()+'/'+res.date.getFullYear()
 					td
 						p= res.message
 					td
