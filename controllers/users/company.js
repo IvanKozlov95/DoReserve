@@ -5,6 +5,7 @@ var express   	  = require('express'),
 	Client 	  	  = mongoose.model('Client'),
 	Company  	  = mongoose.model('Company'),
 	Reservation   = mongoose.model('Reservation'),
+	HtmlError	  = require('../../lib/HtmlError'),
 	log 	      = require('../../util/log')(module);
 
 router.get('/home', auth.mustCompany, function(req, res, next) {
@@ -30,16 +31,20 @@ router.get('/home', auth.mustCompany, function(req, res, next) {
 });
 
 router.get('/reservations', auth.mustCompany, function(req, res, next) {
+	var stList = Reservation.statusList();
+	var status = [].indexOf.call(stList, req.query.status);
+
 	Reservation
-		.find({ company: req.user.id })
+		.find({ company: req.user.id, status: status })
 		.populate('client')
+		.lean()
 		.exec((err, reservations) => {
 		if (err) return next(err);
 
 		res.render('reservation/list', {
 			company: req.user._id,
 			reservations: reservations,
-			stList: Reservation.statusList()
+			stList: stList
 		});
 	});
 });
@@ -93,7 +98,7 @@ router.get('/profile', function(req, res, next) {
 	try {
 		id = ObjectId(id);
 	} catch (e) {
-		return res.status(404).end();
+		return next(new HtmlError(404));
 	}
 
 	Company

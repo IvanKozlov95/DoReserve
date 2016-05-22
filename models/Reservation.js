@@ -8,7 +8,8 @@ var statuses = {
 	0: 'New',
 	1: 'Pending',
 	2: 'Resolved',
-	3: 'Rejected'
+	3: 'Rejected',
+	length: 4
 }
 
 var ReservationSchema = new Schema({
