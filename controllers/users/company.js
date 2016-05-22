@@ -87,24 +87,29 @@ router.get('/info', function(req, res, next) {
 		})
 });
 
-router.get('/:id', function(req, res, next) {
-	Company.findById(req.params.id, function(err, company) {
-		if (err) return next(err);
+router.get('/profile', function(req, res, next) {
+	var id = req.query.id;
 
-		if (company) {
-				log.info(company);
-				company.getPlans(function(err, plans) {
-					if (err) return next(err);
-	
-					res.render('company/profile', {
-						company: company,
-						plans: plans
-					});
-				})
+	try {
+		id = ObjectId(id);
+	} catch (e) {
+		return res.status(404).end();
+	}
+
+	Company
+		.findById(id)
+		.exec(function(err, company) {
+			if (err) return next(err);
+
+			if (company) {
+				res.render('company/profile', {
+					company: company.toJSON()
+				});
 			}
-		else 
-			res.status(404).end();
-	})
+			else {
+				res.status(404).end();
+			}
+		});
 });
 
 module.exports = router;
