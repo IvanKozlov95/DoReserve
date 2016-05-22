@@ -48,6 +48,9 @@ openModal = (company) ->
 	$ modalId + " input[name='company']"
 		.val(company._id)
 
+closeModal = () ->
+	$(modalId).modal('hide')
+
 makeReservation = () ->
 	form = $(modalId + ' #form-reserve')
 	$.ajax {
@@ -57,6 +60,7 @@ makeReservation = () ->
 		complete: (jqXHR, status) -> 
 			if (status == 'success') 
 				msgType = "info"
+				closeModal()
 			else
 				msgType = 'warn'
 			$.notify jqXHR.responseJSON, msgType
