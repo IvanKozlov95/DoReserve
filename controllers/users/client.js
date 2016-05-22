@@ -1,25 +1,68 @@
 var express  	= require('express');
-var router   	= express.Router();
-var passport 	= require('passport');
-var mongoose 	= require('mongoose');
-var Client 		= mongoose.model('Client');
-var Reservation = mongoose.model('Reservation');
-var log 		= require('../../util/log')(module);
-var mw 	 	    = require('../../middleware/authMw');
+    router   	= express.Router(),
+    mongoose 	= require('mongoose'),
+    ObjectId	= mongoose.Types.ObjectId,
+    log 		= require('../../util/log')(module),
+    mw 	 	    = require('../../middleware/authMw');
 
 router.get('/home', mw.mustClient, function(req, res, next) {
-	Client.findById(req.user.id, function(err, client) {
-		if (err) return next(err);
-
-		client.getReservations(null, function(err, reservations) {
-			if (err) return next(err);
-
-			res.render('client/home', {
-				client: client.toJSON(),
-				reservations: reservations
+	getClientInfo(req.user.id)
+		.then(
+			data => {
+				if (data) {
+					res.render('client/home', data);
+				} else {
+					res.status(404).end();
+				}
+			},
+			error => {
+				return next(error);
 			});
+});
+
+router.get('/profile', mw.mustClient, function(req, res, next) {
+	var id = req.query.id;
+	var Reservation = mongoose.model('Reservation');
+	try {
+		id = ObjectId(id);
+	} catch (e) {
+		return res.status(404).end();
+	}
+	getClientInfo(id)
+		.then(
+			data => {
+				if (data) {
+					data.statusList = Reservation.statusList();
+					res.render('client/profile', data);
+				} else {
+					res.status(404).end();
+				}
+			},
+			error => {
+				return next(error);
+			});
+});
+
+function getClientInfo(id) {
+    var Client = mongoose.model('Client');
+	return new Promise((resolve, reject) => {
+		Client.findById(id, function(err, client) {
+			if (err) reject(err);
+
+			if (client) {
+				client.getReservations({deep: true}, function(err, reservations) {
+					if (err) reject(err);
+
+					resolve({
+						client: client.toJSON(),
+						reservations: reservations
+					});
+				});
+			} else {
+				resolve(null);
+			}
 		});
 	});
-})
+}
 
 module.exports = router;
