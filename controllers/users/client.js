@@ -3,6 +3,7 @@ var express  	= require('express');
     mongoose 	= require('mongoose'),
     ObjectId	= mongoose.Types.ObjectId,
     log 		= require('../../util/log')(module),
+    HtmlError   = require('../../lib/HtmlError'),
     mw 	 	    = require('../../middleware/authMw');
 
 router.get('/home', mw.mustClient, function(req, res, next) {
@@ -23,10 +24,11 @@ router.get('/home', mw.mustClient, function(req, res, next) {
 router.get('/profile', mw.mustClient, function(req, res, next) {
 	var id = req.query.id;
 	var Reservation = mongoose.model('Reservation');
+
 	try {
 		id = ObjectId(id);
 	} catch (e) {
-		return res.status(404).end();
+		return next(new HtmlError(404));
 	}
 	getClientInfo(id)
 		.then(
@@ -35,7 +37,7 @@ router.get('/profile', mw.mustClient, function(req, res, next) {
 					data.statusList = Reservation.statusList();
 					res.render('client/profile', data);
 				} else {
-					res.status(404).end();
+					return next(new HtmlError(404));
 				}
 			},
 			error => {

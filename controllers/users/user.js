@@ -1,12 +1,13 @@
-var express   = require('express'),
-	router 	  = express.Router(),
-	auth 	  = require('../../middleware/authMw'),
-	mongoose  = require('../../lib/mongoose'),
-	User      = mongoose.model('User'),
-	log 	  = require('../../util/log')(module),
-	storages  = require('../../util/storages'),
- 	multer	  = require('multer'),
- 	upload	  = multer({ storage: storages.logoStorage });
+var express    = require('express'),
+	router 	   = express.Router(),
+	auth 	   = require('../../middleware/authMw'),
+	mongoose   = require('../../lib/mongoose'),
+	User       = mongoose.model('User'),
+	log 	   = require('../../util/log')(module),
+	storages   = require('../../util/storages'),
+	HtmlError  = require('../../lib/HtmlError'),
+ 	multer	   = require('multer'),
+ 	upload	   = multer({ storage: storages.logoStorage });
 
 router.get('/home', auth.mustAuthenticated, function(req, res, next) {
 	res.redirect('/' + req.user.__t + '/home');
@@ -42,8 +43,9 @@ router.post('/update', upload.single('logo'), auth.mustAuthenticated, function(r
 				user[i] = req.body[i];
 			}
 			
-			user.updateLogo(req.file.filename);
+			user.updateLogo(req.file && req.file.filename);
 			user.save((err) => {
+				if (err.code) return next(new HtmlError(409, 'Name is already taken'));
 				if (err) return next(err);
 
 				log.info('User was updated');

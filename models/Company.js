@@ -7,7 +7,7 @@ var mongoose = require('../lib/mongoose'),
  
 
 var CompanySchema = new Schema({
-  logo: String,
+  logo: { type: String, default: 'default.jpg' },
   address: String,
   desc: String,
   reservations: [ { type: Schema.Types.ObjectId, ref: 'Reservation' } ]
@@ -20,7 +20,7 @@ CompanySchema.methods.toJSON = function() {
     email: this.email,
     phone: this.phone,
     address: this.address,
-    // logo: this.logo, 
+    logo: this.logo, 
     description: this.desc
   }
 }
