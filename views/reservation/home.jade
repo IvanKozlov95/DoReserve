@@ -1,0 +1,49 @@
+extends ../layout
+
+block content
+	h4 Reservation
+	h4#status Status  
+		small= status
+	h4 From  
+		a(href='/client/profile/?id='+reservation.client._id)
+			small= reservation.client.name
+	h4 Company   
+		a(href='/company/profile/?id='+reservation.company._id)
+			small= reservation.company.name
+	h3 Info
+	ul
+		li
+			h4 Date:   
+				small= reservation.date.getDate()+'/'+reservation.date.getMonth()+'/'+reservation.date.getFullYear()
+		li
+			h4 Time:   
+				small= reservation.time
+		if reservation.persons
+			li
+				h4 Persons   
+					small= reservation.persons
+		if reservation.message
+			li
+				h4 Message   
+					small= reservation.message
+
+block bottom
+	script.
+		$(window).load(() => {
+			var statusTag = $('#status')
+			switch(statusTag.find('small').text()) {
+				case 'New':
+					statusTag.addClass('bg-info')
+					break;
+				case 'Pending':
+					statusTag.addClass('bg-warning')
+					break;
+				case 'Resolved':
+					statusTag.addClass('bg-primary')
+					break;
+				case 'Rejected':
+					statusTag.addClass('bg-danger')
+					break;
+			}
+		})
+
