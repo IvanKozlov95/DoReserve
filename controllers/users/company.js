@@ -119,4 +119,21 @@ router.get('/profile', function(req, res, next) {
 		});
 });
 
+router.get('/search', function(req, res, next) {
+	var name = req.query.name;
+	var regex = new RegExp(name, 'i');
+	Company
+		.find({ 'name': { $regex: regex } })
+		.lean()
+		.exec(function(err, companies) {
+			if (err) return next(err);
+
+			if (!!companies) {
+				return res.json(companies);
+			} else {
+				return next(new HtmlError(404));
+			}
+		});
+});
+
 module.exports = router;

@@ -3,17 +3,28 @@ extends ../layout
 block head
 	script(src='/js/validator.js')
 	script(src='/js/reservation.js')
+	script(src='/js/search.js')
 	script(src='https://www.google.com/recaptcha/api.js')
 
 block content
-	h4 Companies
+	.row
+		.col-md-2
+			h4 Companies
+		.col-md-6.col-md-offset-4
+			#custom-search-input
+				.input-group
+					input.search-query.form-control(type='text', placeholder='Search')
+					span.input-group-btn
+						button.btn.btn-danger(type='button')#btn-search
+							span.glyphicon.glyphicon-search
 	table(id='companies-table').table
 		thead
 			tr
-				th Logo
+				th 
 				th Name
 				th Address
 				th Phone
+		tbody
 			each company, ind in companies
 				tr
 					td 
