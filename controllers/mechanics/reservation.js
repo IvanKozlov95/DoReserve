@@ -8,7 +8,7 @@ var express     = require('express'),
 	HtmlError	= require('../../lib/HtmlError'),
 	log 	    = require('../../util/log')(module);
 
-router.get('/', function(req, res, next) {
+router.get('/', auth.mustAuthenticated, function(req, res, next) {
 	var ObjectId = mongoose.Types.ObjectId;
 	try {
 		var id = new ObjectId(req.query.id)
@@ -16,22 +16,27 @@ router.get('/', function(req, res, next) {
 		return next(new HtmlError(404));
 	}
 
-	Reservation.findById(id, function(err, reserve) {
-		if (err) return next(err);
-
-		if (reserve) {
-			if (reserve.client == req.user.id
-				|| reserve.company == req.user.id) {
-				res.render('reservation', {
-					reservation: reserve
-				});
+	Reservation
+		.findById(id)
+		.populate('client')
+		.populate('company')
+		.lean()
+		.exec(function(err, reserve) {
+			if (err) return next(err);
+			if (reserve) {
+				if (reserve.client._id == req.user.id
+					|| reserve.company._id == req.user.id) {
+					res.render('reservation/home', {
+						reservation: reserve,
+						status: Reservation.getStatusText(reserve.status)
+					});
+				} else {
+					next(new HtmlError(403))
+				}
 			} else {
-				res.status(403).end();
+				return next(new HtmlError(404));
 			}
-		} else {
-			return next(new HtmlError(404));
-		}
-	})
+		});
 });
 
 router.post('/create', auth.mustClientOrAnon, reCaptcha, function(req, res, next) {
