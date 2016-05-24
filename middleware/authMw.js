@@ -1,7 +1,7 @@
 exports.mustAuthenticated = function (req, res, next){
   req.isAuthenticated()
     ? next()
-    : res.redirect('/');
+    : res.redirect('/login');
 };
 
 exports.mustCompany = function(req, res, next) {
