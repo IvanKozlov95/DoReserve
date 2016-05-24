@@ -26,7 +26,7 @@ router.get('/profile', auth.mustAuthenticated, function(req, res, next) {
 				json: user.toJSON && user.toJSON(),
 				edit: edit
 			});
-		})
+		});
 });
 
 router.post('/update', upload.single('logo'), auth.mustAuthenticated, function(req, res, next) {
@@ -45,7 +45,7 @@ router.post('/update', upload.single('logo'), auth.mustAuthenticated, function(r
 			
 			user.updateLogo(req.file && req.file.filename);
 			user.save((err) => {
-				if (err.code) return next(new HtmlError(409, 'Name is already taken'));
+				if (err && err.code) return next(new HtmlError(409, 'Name is already taken'));
 				if (err) return next(err);
 
 				log.info('User was updated');

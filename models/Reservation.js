@@ -3,7 +3,6 @@ var mongoose = require('../lib/mongoose'),
 	async 	 = require('async'),
 	mailer = require('../util/mailer');
 
-
 var statuses = {
 	0: 'New',
 	1: 'Pending',
@@ -74,7 +73,7 @@ ReservationSchema.statics.create = function(options, cb) {
 				from: companyEmail,
 				to: cleintEmail,
 				subject: 'New Reservation',
-				html: '<p>Your reservation\'ve just been created.</p><p>Curren status is: ' + statuses[res.status] + '</p><p><a href="http://localhost:8080">Link</a></p>'
+				html: '<p>Your reservation\'ve just been created.</p><p>Curren status is: ' + statuses[res.status] + '</p><p><a href="http://localhost:8080/reservation/?id='+reservation.id+'">Link</a></p>'
 			});
 
 			cb(null, reservation);
@@ -116,7 +115,7 @@ ReservationSchema.methods.updateStatus = function(status) {
 				from: result[1].email,
 				to: result[0].email,
 				subject: 'Reservation status',
-				html: '<p>Your reservation\'s have just been updated.</p><p>Curren status is: ' + statuses[this.status] + '</p><p><a href="http://localhost:8080">Link</a></p>'
+				html: '<p>Your reservation\'s have just been updated.</p><p>Curren status is: ' + statuses[this.status] + '</p><p><a href="http://localhost:8080/reservation/?id='+this.id+'">Link</a></p>'
 			});
 		});
 
@@ -137,6 +136,8 @@ ReservationSchema.methods.getCompany = function() {
 }
 
 ReservationSchema.statics.statusList = function() { return statuses; }
+
+ReservationSchema.statics.getStatusText = function(ind) { return statuses[ind] }
 
 //todo:
 //	implement order
