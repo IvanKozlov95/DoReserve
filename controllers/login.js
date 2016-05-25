@@ -1,9 +1,9 @@
 var express  = require('express'),
- 	router   = express.Router(),
- 	passport = require('passport'),
- 	mongoose = require('mongoose'),
- 	User 	 = mongoose.model('User'),
- 	log 	 = require('../util/log')(module);
+   	router   = express.Router(),
+   	passport = require('passport'),
+   	mongoose = require('mongoose'),
+   	User 	   = mongoose.model('User'),
+   	log 	   = require('../util/log')(module);
 
 
 router.get('/', function(req, res, next) {
