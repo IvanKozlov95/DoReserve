@@ -1,8 +1,8 @@
 {
 	"port": 8080,
 	"mongoose": {
-		"uri": "mongodb://localhost/doreserve",
-		"dbname": "test"
+		"uri": "mongodb://localhost:27017/doreserve",
+		"dbname": "doreserve"
 	},
 	"mail": {
 		"service": "Gmail",
