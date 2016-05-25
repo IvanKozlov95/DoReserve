@@ -3,9 +3,9 @@ displayedForm = null
 $(document).ready () -> 
 	$('#client').mouseenter showFrom 
 	$('#company').mouseenter showFrom 
-	# $('#client-form').hide();
-	$('#company-form').hide();
-	$('#client').trigger 'mouseenter'
+	enableValidator $('#client-form')
+	enableValidator $('#company-form')
+
 
 	$('[name="phone"]').change (ev) ->
 		target = $ ev.target 
@@ -16,6 +16,26 @@ $(document).ready () ->
 	$('.btn-submit').click () ->
 		$(this).closest('form').submit()
 	
+enableValidator = (form) ->
+	form.validator()
+	form.validator().on 'submit', (ev) ->
+		formData = new FormData this
+		if !ev.isDefaultPrevented()
+			$.ajax {
+				url: '/register',
+				method: 'POST',
+				data: formData,
+				contentType: false,
+				processData: false,
+				statusCode: {
+					400: () ->
+						$.notify "Current login is already taken", "warn"
+					200: () ->
+						window.location.href = '/'
+				}
+			}
+			ev.preventDefault()
+
 setBg = (bg) -> 
 	$('body')
 		.css('background-color', bg);
