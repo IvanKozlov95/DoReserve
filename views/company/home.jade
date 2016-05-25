@@ -4,17 +4,30 @@ block head
 	script(src="/js/company.js")
 
 block content
-	if edit
+	div(id='' + company._id).profile
 		form(role='form')
 			h2.form-heaing= company.name
-			.form-group
-				input(type='text' name='name' placeholder='Company name' value='' + company.name)
+				a(href='reservations')
+					small
+						span.label.label-info= 'Manage reservations'
+			input(type='hidden' value=company.id name='id')
+			each value, field in company
+				if (field == 'name' || field == 'username' || field == 'logo' || field == 'description') 
+					- continue;
+				.row
+					.form-group
+						.col-md-1
+							label= field
+						.col-md-2.col-md-offset-1
+							input(type='text' name=field placeholder='Your ' + field value=value)
+			.row
+				.form-group
+					.col-md-1
+						label Avatar
+					.col-md-2.col-md-offset-1
+						input(type='file' name='logo')
+			input(type='submit' value='Save').btn.btn-md.btn-primary
 
-	.control-panel
-		button(type='button' class='btn btn-primary btn-md' onclick='window.location.href="/company/home?edit=true"') Edit
-		button(type='button' class='btn btn-primary btn-md' onclick='window.location.href="/company/reservations"') Reservations
-	div(id='' + company._id).profile
-		h2= company.name
 		div(class='avatar')
 			img(src='\\logos\\'+company.logo alt='avatar' width='200' height='200').img-circle
 
