@@ -100,6 +100,33 @@ router.post('/update', auth.mustCompany, function(req, res, next) {
 				res.status(404).end();
 			}
 		});
-})
+});
+
+router.get('/list', auth.mustAuthenticated, function(req, res, next) {
+	var userType = req.user.__t.toLowerCase();
+	var query = {};
+
+	query[userType] = req.user.id;
+	Reservation
+		.find(query)
+		.populate('client')
+		.populate('company')
+		.lean()
+		.exec((err, reservations) => {
+			if (err) return next(err);
+
+			if (reservations) {
+				if (userType == 'client')
+					res.render('reservation/listClient', {
+						reservations: reservations,
+						stList: Reservation.statusList()
+					})
+				else 
+					next(new HtmlError(500, 'This part is in progress.'));
+			} else {
+				next(new HtmlError(404));
+			}
+		});
+});
 
 module.exports = router;
