@@ -1,0 +1,31 @@
+
+extends ../layout
+
+block head
+	script(src='/js/company.js')
+
+block content
+	input(type='hidden' value=''+company name='company')
+	h4 Reservations
+	table(id='reservations').table
+		thead
+			tr
+				th #
+				th Company
+				th Date
+				th Time
+				th Status
+		tbody
+			each res, ind in reservations
+					tr
+						td 
+							a(href='/reservation/?id=' + res._id)= ind
+						td
+							a(href='/company/profile/?id=' + res.company._id)
+								p= res.company.name || 'Company name'
+						td
+							p= res.date.getDate()+'/'+res.date.getMonth()+'/'+res.date.getFullYear()
+						td
+							p= res.time
+						td
+							p= stList[res.status]
