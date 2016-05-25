@@ -21,7 +21,7 @@ router.post('/', upload.single('logo'), function(req, res, next) {
 			name: req.body.name,
 			address: req.body.address,
 			desc: req.body.desc,
-			logo: req.file.filename,
+			logo: req.file && 	req.file.filename,
 		} )
 		: new Client( {
 			username: req.body.username,

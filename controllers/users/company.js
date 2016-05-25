@@ -9,7 +9,6 @@ var express   	  = require('express'),
 	log 	      = require('../../util/log')(module);
 
 router.get('/home', auth.mustCompany, function(req, res, next) {
-	var edit = req.query.edit;
 	Company.findById(req.user.id, (err, company) => {
 			if (err) return next(err);
 
@@ -17,10 +16,7 @@ router.get('/home', auth.mustCompany, function(req, res, next) {
 				company.getReservations(null, (err, reservations) => {
 					if (err) return next(err);
 					res.render('company/home', {
-						company: company,
-						reservations: reservations,
-						stList: Reservation.statusList(),
-						edit: edit
+						company: company.toJSON()
 					});
 				})
 			} else {
@@ -66,21 +62,6 @@ router.get('/all', function(req, res, next) {
 	});
 });
 
-router.get('/plans', function(req, res, next) {
-	Company.findById(req.user.id, function(err, company) {
-		if (err) return next(err);
-
-		company.getPlans(function(err, plans) {
-			if (err) return next(err);
-
-			log.info(plans.toString());
-			res.render('plan/list', {
-				plans: plans
-			});
-		})
-	});
-});
-
 router.get('/info', function(req, res, next) {
 	Company
 		.findById(req.query.id)
@@ -90,7 +71,7 @@ router.get('/info', function(req, res, next) {
 			if (company) 
 				res.status(200).json(company);
 			else 
-				res.status(404).end();
+				next(new HtmlError(404));
 		})
 });
 
@@ -114,7 +95,7 @@ router.get('/profile', function(req, res, next) {
 				});
 			}
 			else {
-				res.status(404).end();
+				next(new HtmlError);
 			}
 		});
 });

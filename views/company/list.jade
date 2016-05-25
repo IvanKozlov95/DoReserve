@@ -4,7 +4,8 @@ block head
 	script(src='/js/validator.js')
 	script(src='/js/reservation.js')
 	script(src='/js/search.js')
-	script(src='https://www.google.com/recaptcha/api.js')
+	if (!locals.user)
+		script(src='https://www.google.com/recaptcha/api.js')
 
 block content
 	.row
@@ -39,7 +40,9 @@ block content
 						p= company.address
 					td
 						p= company.phone
-						button.btn.btn-primary(data-toggle='modal' data-target='#exampleModal' data-companyid=company.id) Reserve table
+					if (locals.user == undefined || locals.user.__t == 'Client')
+						td
+							button.btn.btn-primary(data-toggle='modal' data-target='#exampleModal' data-companyid=company.id) Reserve table
 
 	#exampleModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel')
 		.modal-dialog(role='document')
@@ -75,8 +78,9 @@ block content
 									textarea#message-text(name='message').form-control
 						.form-group
 							input(type='hidden' name='company')
-						.form-group
-							div#captcha.g-recaptcha(data-sitekey='6LfxJx0TAAAAAMbSqaY6GGMQfqgR0a6PZFwWTva6')
+						if (!locals.user)
+							.form-group
+								div#captcha.g-recaptcha(data-sitekey='6LfxJx0TAAAAAMbSqaY6GGMQfqgR0a6PZFwWTva6')
 						h4
 							span#message.label-danger
 				.modal-footer

@@ -23,13 +23,11 @@ body
 			div(id='navbar' class='navbar-collapse collapse')
 				ul(class='nav navbar-nav')
 					li
-						a(href='/user/home') Home
+						a(href='/user/home') Profile
 					li
 						a(href='/company/all') Companies
 					li
-						a(href='#') About
-					li
-						a(href='/user/profile') Profile
+						a(href='/about') About
 				//- login 
 				if !user
 					form(class='navbar-form navbar-right' action='/login' method='post')
@@ -48,6 +46,7 @@ body
 		block content
 	footer.footer
 		.container
+			br
 			p.text-muted Ivan Kozlov --- 2016 (c)
 
 block bottom

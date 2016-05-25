@@ -5,11 +5,11 @@ block head
 
 block content
 	input(type='hidden' value=''+company name='company')
+	h4 Reservations
+		a(href='/company/reservations?status=New') 	New
+		a(href='/company/reservations?status=Pending') 	Pending
+		a(href='/company/reservations?status=Rejected') 	Rejected
 	table(id='reservations').table
-		h4 Reservations
-			a(href='/company/reservations?status=New') 	New
-			a(href='/company/reservations?status=Pending') 	Pending
-			a(href='/company/reservations?status=Rejected') 	Rejected
 		thead
 			tr
 				th #

@@ -3,10 +3,13 @@ extends ..\layout
 block content
 	div(id='' + client.id).profile
 		form(role='form' action='/user/update' method='POST' enctype='multipart/form-data')
-			h2.form-heading= client.name
-			input(type='hidden' value=client.id name='id')
+			h2.form-heading= client.name + '\t'
+				a(href='/reservation/list')
+					small
+						span.label.label-info= 'You\'ve got ' + client._reservationsLength + ' reservations'
+			input(type='hidden' value=client._id name='id')
 			each value, field in client
-				if (field == 'id' || field == 'name' || field == 'logo') 
+				if (field == 'name' || field.match(/^_.*/)) 
 					- continue;
 				.row
 					.form-group
@@ -20,6 +23,7 @@ block content
 						label Avatar
 					.col-md-2.col-md-offset-1
 						input(type='file' name='logo')
-			input(type='submit' value='Save').btn.btn-md.btn-primary 
+			input(type='submit' value='Save').btn.btn-md.btn-primary
+
 		div(class='avatar')
-			img(src='\\logos\\'+client.logo alt='avatar' width='150' height='200').img-circle
+			img(src='\\logos\\'+client._logo alt='avatar' width='200' height='200').img-circle

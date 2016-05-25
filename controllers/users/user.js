@@ -32,9 +32,10 @@ router.get('/profile', auth.mustAuthenticated, function(req, res, next) {
 router.post('/update', upload.single('logo'), auth.mustAuthenticated, function(req, res, next) {
 
 	if (req.user.id != req.body.id) {
-		return res.status(403).end();
+		return next(new HtmlError(403));
 	}
 
+	log.info('hehe')
 	User.findById(req.body.id, (err, user) => {
 		if (err) return next(err);
 
@@ -52,7 +53,7 @@ router.post('/update', upload.single('logo'), auth.mustAuthenticated, function(r
 				res.redirect('home');
 			});
 		} else {
-			res.status(404).end();
+			next(new HtmlError(404));
 		}
 	});
 })

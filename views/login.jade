@@ -1,8 +1,11 @@
 extends layout
 
+block head
+	link(href='/css/signin.css' rel='stylesheet')
+
 block content
-	h2.form-signin-heading Login to your account
 	form(action='/login' method='post').form-signin
+		h2.form-signin-heading Login to your account
 		fieldset
 			label(for='username').sr-only Name
 			input(type='text' name='username' placeholder='Your Name').form-control

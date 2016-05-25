@@ -16,12 +16,13 @@ var ClientSchema = new Schema({
 
 ClientSchema.methods.toJSON = function() {
   return {
-    id: this.id,
+    _id: this.id,
     username: this.username,
     name: this.name,
     email: this.email,
     phone: this.phone,
-    logo: this.logo
+    _logo: this.logo,
+    _reservationsLength: this.reservations.length
   }
 }
 
